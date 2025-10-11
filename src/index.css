@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+/* UI Commons - Shared Tailwind styles for Joomla 5 components */
+
+/* This file ensures that all Tailwind utilities are available in the ui-commons library */
+/* The safelist in tailwind.config.js ensures dynamic classes like col-span-* are never purged */
+

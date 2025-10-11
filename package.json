@@ -1,0 +1,137 @@
+{
+  "name": "@shondalai/ui-commons",
+  "version": "1.0.0",
+  "description": "Reusable UI components and utilities for Joomla 5 components",
+  "type": "module",
+  "main": "./dist/ui-commons.umd.js",
+  "module": "./dist/ui-commons.es.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/ui-commons.es.js",
+      "require": "./dist/ui-commons.umd.js"
+    },
+    "./dist/ui-commons.css": "./dist/ui-commons.css",
+    "./dist/style.css": "./dist/ui-commons.css"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext ts,tsx",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest --watch",
+    "prepublishOnly": "npm run build",
+    "prepare": "npm run build"
+  },
+  "keywords": [
+    "joomla",
+    "ui",
+    "components",
+    "react",
+    "typescript",
+    "layout",
+    "dynamic-layout"
+  ],
+  "author": "Maverick",
+  "license": "GPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shondalai/ui-commons.git"
+  },
+  "bugs": {
+    "url": "https://github.com/shondalai/ui-commons/issues"
+  },
+  "homepage": "https://github.com/shondalai/ui-commons#readme",
+  "peerDependencies": {
+    "@lexical/html": "^0.35.0",
+    "@lexical/link": "^0.35.0",
+    "@lexical/list": "^0.35.0",
+    "@lexical/react": "^0.35.0",
+    "@lexical/rich-text": "^0.35.0",
+    "@lexical/selection": "^0.35.0",
+    "@lexical/utils": "^0.35.0",
+    "lexical": "^0.35.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "peerDependenciesMeta": {
+    "lexical": {
+      "optional": true
+    },
+    "@lexical/react": {
+      "optional": true
+    },
+    "@lexical/html": {
+      "optional": true
+    },
+    "@lexical/link": {
+      "optional": true
+    },
+    "@lexical/list": {
+      "optional": true
+    },
+    "@lexical/rich-text": {
+      "optional": true
+    },
+    "@lexical/selection": {
+      "optional": true
+    },
+    "@lexical/utils": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "@radix-ui/react-avatar": "^1.1.10",
+    "@radix-ui/react-label": "^2.1.7",
+    "@radix-ui/react-scroll-area": "^1.2.10",
+    "@radix-ui/react-select": "^2.2.6",
+    "@radix-ui/react-separator": "^1.1.7",
+    "@radix-ui/react-switch": "^1.2.6",
+    "@radix-ui/react-tabs": "^1.1.13",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
+    "lucide-react": "^0.544.0",
+    "tailwind-merge": "^3.3.1"
+  },
+  "devDependencies": {
+    "@lexical/html": "^0.36.2",
+    "@lexical/link": "^0.36.2",
+    "@lexical/list": "^0.36.2",
+    "@lexical/react": "^0.36.2",
+    "@lexical/rich-text": "^0.36.2",
+    "@lexical/selection": "^0.36.2",
+    "@lexical/utils": "^0.36.2",
+    "@tailwindcss/postcss": "^4.1.14",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/react": "^18.3.24",
+    "@types/react-dom": "^18.3.7",
+    "@typescript-eslint/eslint-plugin": "^8.43.0",
+    "@typescript-eslint/parser": "^8.43.0",
+    "@vitejs/plugin-react": "^5.0.2",
+    "@vitest/ui": "^3.2.4",
+    "autoprefixer": "^10.4.14",
+    "eslint": "^9.35.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "happy-dom": "^19.0.2",
+    "jsdom": "^27.0.0",
+    "lexical": "^0.36.2",
+    "postcss": "^8.4.27",
+    "tailwindcss": "^4.1.13",
+    "terser": "^5.44.0",
+    "typescript": "^5.0.2",
+    "vite": "^7.1.5",
+    "vite-plugin-dts": "^4.3.0",
+    "vitest": "^3.2.4"
+  }
+}
