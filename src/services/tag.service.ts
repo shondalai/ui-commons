@@ -169,15 +169,11 @@ export class TagService {
    */
   static createFetcher (baseUrl: string): (search: string) => Promise<Tag[]> {
     return async (search: string) => {
-      console.log('TagService.createFetcher: Calling with search:', search)
       const response = await this.getTags(baseUrl, {
         published: 1,
         search: search || undefined,
         limit: 50,
       })
-      console.log('TagService.createFetcher: Full response:', response)
-      console.log('TagService.createFetcher: Response data:', response.data)
-      console.log('TagService.createFetcher: Data length:', response.data?.length || 0)
       return response.data
     }
   }
