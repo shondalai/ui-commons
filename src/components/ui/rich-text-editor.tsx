@@ -29,12 +29,17 @@ interface RichTextEditorProps {
     characterCount?: string
     characterLimitExceeded?: string
   }
+  // New props for easier editing workflow
+  editingContent?: string | null  // Content to load when editing
+  onEditingComplete?: () => void  // Called when editing is complete
+  autoLoadEditContent?: boolean   // Automatically load editing content (default: true)
 }
 
 export interface RichTextEditorRef {
   clearContent: () => void
   focus: () => void
   getTextContent: () => string
+  loadContent: (html: string) => void  // New method to load content programmatically
 }
 
 // Toolbar component
@@ -286,6 +291,116 @@ function ReadOnlyPlugin () {
   return null
 }
 
+// Load content plugin for editing workflow
+function LoadContentPlugin ({
+  loadContentRef,
+  editingContent,
+  autoLoad = true,
+}: {
+  loadContentRef: (loadFn: (html: string) => void) => void
+  editingContent?: string | null
+  autoLoad?: boolean
+}) {
+  const [editor] = useLexicalComposerContext()
+  const loadedContentIdRef = useRef<string | null>(null)
+
+  useEffect(() => {
+    const loadContent = (html: string) => {
+      editor.update(() => {
+        try {
+          const parser = new DOMParser()
+          const doc = parser.parseFromString(html, 'text/html')
+          const nodes = $generateNodesFromDOM(editor, doc)
+          const root = $getRoot()
+          root.clear()
+
+          for (const node of nodes) {
+            try {
+              if (!node.getParent()) {
+                root.append(node)
+              }
+            }
+            catch (appendError) {
+              console.warn('Failed to append node:', appendError)
+              try {
+                const textContent = node.getTextContent()
+                if (textContent) {
+                  const paragraph = $createParagraphNode()
+                  paragraph.append($createTextNode(textContent))
+                  root.append(paragraph)
+                }
+              }
+              catch (fallbackError) {
+                console.warn('Fallback also failed:', fallbackError)
+              }
+            }
+          }
+
+          if (root.getChildrenSize() === 0) {
+            const paragraph = $createParagraphNode()
+            const plainText = doc.body.textContent || html.replace(/<[^>]*>/g, '')
+            paragraph.append($createTextNode(plainText))
+            root.append(paragraph)
+          }
+        }
+        catch (error) {
+          console.error('Failed to load HTML:', error)
+        }
+      })
+    }
+
+    loadContentRef(loadContent)
+  }, [editor, loadContentRef])
+
+  // Auto-load editing content when it changes
+  useEffect(() => {
+    if (autoLoad && editingContent && loadedContentIdRef.current !== editingContent) {
+      loadedContentIdRef.current = editingContent
+      editor.update(() => {
+        try {
+          const parser = new DOMParser()
+          const doc = parser.parseFromString(editingContent, 'text/html')
+          const nodes = $generateNodesFromDOM(editor, doc)
+          const root = $getRoot()
+          root.clear()
+
+          for (const node of nodes) {
+            try {
+              if (!node.getParent()) {
+                root.append(node)
+              }
+            }
+            catch (appendError) {
+              console.warn('Failed to append node:', appendError)
+            }
+          }
+
+          if (root.getChildrenSize() === 0) {
+            const paragraph = $createParagraphNode()
+            const plainText = doc.body.textContent || editingContent.replace(/<[^>]*>/g, '')
+            if (plainText) {
+              paragraph.append($createTextNode(plainText))
+              root.append(paragraph)
+            }
+          }
+        }
+        catch (error) {
+          console.error('Failed to load editing content:', error)
+        }
+      })
+    } else if (editingContent === null && loadedContentIdRef.current !== null) {
+      // Clear when editing is cancelled
+      loadedContentIdRef.current = null
+      editor.update(() => {
+        const root = $getRoot()
+        root.clear()
+      })
+    }
+  }, [editor, editingContent, autoLoad])
+
+  return null
+}
+
 export const RichTextEditor = forwardRef<RichTextEditorRef, RichTextEditorProps>(({
   value = '',
   onChange,
@@ -296,9 +411,12 @@ export const RichTextEditor = forwardRef<RichTextEditorRef, RichTextEditorProps>
   showToolbar = true,
   showCharacterCount = true,
   labels,
+  editingContent,
+  autoLoadEditContent = true,
 }, ref) => {
   const [characterCount, setCharacterCount] = React.useState(0)
   const clearContentRef = useRef<() => void>()
+  const loadContentRef = useRef<(html: string) => void>()
   const editorRef = useRef<any>()
 
   useImperativeHandle(ref, () => ({
@@ -314,6 +432,11 @@ export const RichTextEditor = forwardRef<RichTextEditorRef, RichTextEditorProps>
     },
     getTextContent: () => {
       return ''
+    },
+    loadContent: (html: string) => {
+      if (loadContentRef.current) {
+        loadContentRef.current(html)
+      }
     },
   }), [])
 
@@ -390,6 +513,11 @@ export const RichTextEditor = forwardRef<RichTextEditorRef, RichTextEditorProps>
         <HTMLChangePlugin onChange={onChange}/>
         <InitialValuePlugin html={value}/>
         <ClearContentPlugin onClearRef={(clearFn) => { clearContentRef.current = clearFn }}/>
+        <LoadContentPlugin
+          loadContentRef={(loadFn) => { loadContentRef.current = loadFn }}
+          editingContent={editingContent}
+          autoLoad={autoLoadEditContent}
+        />
         {disabled && <ReadOnlyPlugin/>}
 
         {showCharacterCount && (
