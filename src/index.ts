@@ -61,6 +61,7 @@ export type { LanguageContextType } from './contexts/language-context'
 export { ThemeProvider, useTheme } from './contexts/theme-context'
 export { AuthProvider, useAuth } from './contexts/auth-context'
 export type { User } from './contexts/auth-context'
+export { ToastProvider, useToast } from './contexts/toast-context'
 
 // Layout System - Hooks
 export { useLayout, useMultipleLayouts } from './hooks/use-layout'
