@@ -160,7 +160,7 @@ function CharacterCountPlugin ({
   return (
     <div className="flex justify-between items-center p-2 border-t border-gray-200 bg-gray-50">
       <div className={`text-sm ${isOverLimit ? 'text-red-600' : 'text-gray-500'}`}>
-        {characterCount}{maxCharacters ? ` / ${maxCharacters}` : ''} {labels?.characterCount || 'characters'}
+        {characterCount}{maxCharacters ? ` / ${maxCharacters}` : ''}{!maxCharacters && ` ${labels?.characterCount || 'characters'}`}
         {isOverLimit && (
           <span className="ml-2 text-red-600">{labels?.characterLimitExceeded || 'Character limit exceeded'}</span>
         )}
@@ -272,6 +272,20 @@ function ClearContentPlugin ({ onClearRef }: { onClearRef: (clearFn: () => void)
   return null
 }
 
+// Read-only plugin for disabled state
+function ReadOnlyPlugin () {
+  const [editor] = useLexicalComposerContext()
+
+  useEffect(() => {
+    editor.setEditable(false)
+    return () => {
+      editor.setEditable(true)
+    }
+  }, [editor])
+
+  return null
+}
+
 export const RichTextEditor = forwardRef<RichTextEditorRef, RichTextEditorProps>(({
   value = '',
   onChange,
@@ -362,10 +376,10 @@ export const RichTextEditor = forwardRef<RichTextEditorRef, RichTextEditorProps>
                   </div>
                 }
                 aria-placeholder={placeholder}
-                readOnly={disabled}
               />
             }
             ErrorBoundary={ErrorBoundary}
+            placeholder={null}
           />
         </div>
 
@@ -376,6 +390,7 @@ export const RichTextEditor = forwardRef<RichTextEditorRef, RichTextEditorProps>
         <HTMLChangePlugin onChange={onChange}/>
         <InitialValuePlugin html={value}/>
         <ClearContentPlugin onClearRef={(clearFn) => { clearContentRef.current = clearFn }}/>
+        {disabled && <ReadOnlyPlugin/>}
 
         {showCharacterCount && (
           <CharacterCountPlugin

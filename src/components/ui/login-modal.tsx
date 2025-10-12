@@ -116,6 +116,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
             <button
               onClick={onClose}
               className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-900 rounded-lg transition-colors"
+              aria-label="Close"
             >
               <X className="h-5 w-5"/>
             </button>
@@ -176,6 +177,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                     tabIndex={-1}
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
                   >
                     {showPassword ? <EyeOff className="h-4 w-4"/> : <Eye className="h-4 w-4"/>}
                   </button>
@@ -244,4 +246,3 @@ export const LoginModal: React.FC<LoginModalProps> = ({
 }
 
 export default LoginModal
-

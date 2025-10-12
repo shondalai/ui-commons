@@ -3,32 +3,32 @@ import { AlertTriangle, X } from 'lucide-react'
 
 interface ConfirmationDialogProps {
   isOpen: boolean
-  onClose: () => void
+  onOpenChange: (open: boolean) => void
   onConfirm: () => void
   title: string
-  message: string
-  confirmText?: string
-  cancelText?: string
-  variant?: 'danger' | 'warning' | 'info'
+  description?: string
+  confirmLabel?: string
+  cancelLabel?: string
+  variant?: 'destructive' | 'warning' | 'info' | 'danger'
   isLoading?: boolean
 }
 
 export const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
   isOpen,
-  onClose,
+  onOpenChange,
   onConfirm,
   title,
-  message,
-  confirmText = 'Confirm',
-  cancelText = 'Cancel',
-  variant = 'danger',
+  description,
+  confirmLabel = 'Confirm',
+  cancelLabel = 'Cancel',
+  variant = 'destructive',
   isLoading = false,
 }) => {
   // Close on Escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isOpen) {
-        onClose()
+        onOpenChange(false)
       }
     }
 
@@ -41,28 +41,30 @@ export const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
       document.removeEventListener('keydown', handleEscape)
       document.body.style.overflow = 'unset'
     }
-  }, [isOpen, onClose])
+  }, [isOpen, onOpenChange])
 
   if (!isOpen) {
     return null
   }
 
   const variantStyles = {
-    danger: 'text-red-600 dark:text-red-400',
+    destructive: 'text-red-600 dark:text-red-400',
     warning: 'text-amber-600 dark:text-amber-400',
     info: 'text-blue-600 dark:text-blue-400',
+    danger: 'text-red-600 dark:text-red-400',
   }
 
   const buttonStyles = {
-    danger: 'bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 text-white',
+    destructive: 'bg-destructive hover:bg-destructive/90 text-destructive-foreground',
     warning: 'bg-amber-600 hover:bg-amber-700 dark:bg-amber-500 dark:hover:bg-amber-600 text-white',
     info: 'bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white',
+    danger: 'bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 text-white',
   }
 
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in duration-200"
-      onClick={onClose}
+      onClick={() => onOpenChange(false)}
     >
       {/* Backdrop */}
       <div className="absolute inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-sm"/>
@@ -71,10 +73,14 @@ export const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
       <div
         className="relative bg-white dark:bg-gray-900 rounded-xl shadow-2xl max-w-md w-full animate-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="dialog-title"
+        aria-describedby={description ? 'dialog-description' : undefined}
       >
         {/* Close button */}
         <button
-          onClick={onClose}
+          onClick={() => onOpenChange(false)}
           className="absolute top-4 right-4 p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
           aria-label="Close dialog"
         >
@@ -89,23 +95,25 @@ export const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
           </div>
 
           {/* Title */}
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
+          <h3 id="dialog-title" className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
             {title}
           </h3>
 
-          {/* Message */}
-          <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
-            {message}
-          </p>
+          {/* Description */}
+          {description && (
+            <p id="dialog-description" className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
+              {description}
+            </p>
+          )}
 
           {/* Actions */}
           <div className="flex gap-3">
             <button
-              onClick={onClose}
+              onClick={() => onOpenChange(false)}
               disabled={isLoading}
               className="flex-1 px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {cancelText}
+              {cancelLabel}
             </button>
             <button
               onClick={onConfirm}
@@ -133,7 +141,7 @@ export const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
                   <span>Processing...</span>
                 </span>
               ) : (
-                confirmText
+                confirmLabel
               )}
             </button>
           </div>
@@ -142,4 +150,3 @@ export const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
     </div>
   )
 }
-

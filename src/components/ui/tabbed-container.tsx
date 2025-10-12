@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { ChevronRight } from 'lucide-react'
 import { cn } from '../../lib/utils'
 import { LoadingSkeleton } from './loading-skeleton'
@@ -43,31 +43,27 @@ export const TabbedContainer: React.FC<TabbedContainerProps> = ({
   allowMultipleOpen = false,
   collapsible = true,
 }) => {
-  const [activeTabs, setActiveTabs] = useState<Set<string>>(new Set())
+  const [activeTabs, setActiveTabs] = useState<Set<string>>(() => {
+    // Initialize with defaultTab or first tab
+    let initialTab: string | undefined
 
-  const getInitialTab = useCallback(() => {
     if (typeof window === 'undefined') {
-      return defaultTab || tabs[0]?.id
+      initialTab = defaultTab || tabs[0]?.id
+    } else {
+      const urlParams = new URLSearchParams(window.location.search)
+      const urlTabId = urlParams.get(urlParam)
+
+      if (urlTabId && tabs.some(tab => tab.id === urlTabId)) {
+        initialTab = urlTabId
+      } else {
+        initialTab = defaultTab || tabs[0]?.id
+      }
     }
 
-    const urlParams = new URLSearchParams(window.location.search)
-    const urlTabId = urlParams.get(urlParam)
+    return new Set(initialTab ? [initialTab] : [])
+  })
 
-    if (urlTabId && tabs.some(tab => tab.id === urlTabId)) {
-      return urlTabId
-    }
-
-    return defaultTab || tabs[0]?.id
-  }, [defaultTab, tabs, urlParam])
-
-  useEffect(() => {
-    const initialTab = getInitialTab()
-    if (initialTab) {
-      setActiveTabs(new Set([initialTab]))
-    }
-  }, [getInitialTab])
-
-  const handleTabClick = useCallback((tabId: string) => {
+  const handleTabClick = (tabId: string) => {
     if (tabs.find(tab => tab.id === tabId)?.disabled) {
       return
     }
@@ -101,7 +97,7 @@ export const TabbedContainer: React.FC<TabbedContainerProps> = ({
     }
 
     onTabChange?.(tabId)
-  }, [tabs, mode, collapsible, allowMultipleOpen, urlParam, onTabChange])
+  }
 
   const isVertical = orientation === 'vertical' || orientation === 'vertical-left' || orientation === 'vertical-right'
   const isVerticalRight = orientation === 'vertical-right'
@@ -141,7 +137,7 @@ export const TabbedContainer: React.FC<TabbedContainerProps> = ({
                     className={cn(
                       'group relative flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg',
                       'transition-all duration-200 ease-out',
-                      'focus:outline-none focus:ring-2 focus:ring-blue-500/20',
+                      'focus:outline, focus:ring-2 focus:ring-blue-500/20',
                       !isActive && [
                         'text-gray-600 dark:text-gray-400',
                         'hover:text-gray-900 dark:hover:text-gray-100',

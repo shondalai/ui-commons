@@ -53,7 +53,7 @@ const DynamicLayoutManager: React.FC<DynamicLayoutManagerProps> = ({
 
   if (!areas || areas.length === 0) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className={cn('min-h-screen bg-background', className)}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center text-muted-foreground">
             <p>No layout configuration found. Please configure your page layout.</p>
@@ -79,6 +79,10 @@ const DynamicLayoutManager: React.FC<DynamicLayoutManagerProps> = ({
 
   Object.keys(areasByRow).forEach(rowKey => {
     const rowAreas = areasByRow[Number(rowKey)]
+    if (!rowAreas || !Array.isArray(rowAreas)) {
+      return
+    }
+
     const hasFullWidthOrSticky = rowAreas.some(area =>
       area.blocks?.some(block => {
         const config = block.block_config || {}
@@ -207,6 +211,11 @@ const BlockRenderer: React.FC<BlockRendererProps> = React.memo(({
   components,
   componentProps,
 }) => {
+  // Skip disabled blocks
+  if (!block.enabled) {
+    return null
+  }
+
   // Check if this is a sticky or full-width block
   const config = block.block_config || {}
 

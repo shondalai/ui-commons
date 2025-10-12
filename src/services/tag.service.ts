@@ -54,9 +54,13 @@ export class TagService {
       const result = await response.json()
 
       if (result.success && result.data) {
+        // Handle nested data structure: API returns {success: true, data: {data: [...], total: X}}
+        const dataPayload = result.data.data || result.data
+        const totalCount = result.data.total || result.total || 0
+
         return {
-          data: Array.isArray(result.data) ? result.data : [],
-          total: result.total || result.data.length || 0,
+          data: Array.isArray(dataPayload) ? dataPayload : [],
+          total: totalCount,
           success: true,
         }
       }
@@ -165,11 +169,15 @@ export class TagService {
    */
   static createFetcher (baseUrl: string): (search: string) => Promise<Tag[]> {
     return async (search: string) => {
+      console.log('TagService.createFetcher: Calling with search:', search)
       const response = await this.getTags(baseUrl, {
         published: 1,
         search: search || undefined,
         limit: 50,
       })
+      console.log('TagService.createFetcher: Full response:', response)
+      console.log('TagService.createFetcher: Response data:', response.data)
+      console.log('TagService.createFetcher: Data length:', response.data?.length || 0)
       return response.data
     }
   }

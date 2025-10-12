@@ -80,9 +80,10 @@ export const TagSelector: React.FC<TagSelectorProps> = ({
     if (open) {
       setIsLoading(true)
       fetchTags(debouncedSearch).then(tags => {
-        setAvailableTags(tags)
+        setAvailableTags(tags || [])
         setIsLoading(false)
-      }).catch(() => {
+      }).catch((error) => {
+        console.error('TagSelector: Error fetching tags:', error)
         setAvailableTags([])
         setIsLoading(false)
       })
@@ -214,22 +215,18 @@ export const TagSelector: React.FC<TagSelectorProps> = ({
       {/* Tag Selector */}
       {!disabled && selectedTags.length < maxTags && (
         <Popover open={open} onOpenChange={handleOpenChange}>
-          <PopoverTrigger>
-            <Button
-              type="button"
-              variant="outline"
-              role="combobox"
-              aria-expanded={open}
-              className="w-full justify-between h-10 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 hover:border-neutral-300 dark:hover:border-neutral-600 rounded-lg transition-all duration-200"
-            >
-              <div className="flex items-center gap-2 text-neutral-600 dark:text-neutral-400">
-                <Hash className="h-4 w-4"/>
-                <span className="text-sm">
-                  {placeholder || finalLabels.selectTags}
-                </span>
-              </div>
-              <ChevronDown className="h-4 w-4 text-neutral-400"/>
-            </Button>
+          <PopoverTrigger
+            className="w-full justify-between h-10 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 hover:border-neutral-300 dark:hover:border-neutral-600 rounded-lg transition-all duration-200 flex items-center px-3"
+            role="combobox"
+            aria-expanded={open}
+          >
+            <div className="flex items-center gap-2 text-neutral-600 dark:text-neutral-400">
+              <Hash className="h-4 w-4"/>
+              <span className="text-sm">
+                {placeholder || finalLabels.selectTags}
+              </span>
+            </div>
+            <ChevronDown className="h-4 w-4 text-neutral-400"/>
           </PopoverTrigger>
           <PopoverContent className="w-full p-0 border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 rounded-xl shadow-xl" align="start">
             <Command>
@@ -241,54 +238,57 @@ export const TagSelector: React.FC<TagSelectorProps> = ({
                 className="border-0 focus:ring-0 text-sm"
               />
               <CommandList>
-                <CommandEmpty className="py-6 text-center text-sm text-neutral-500 dark:text-neutral-400">
-                  {isLoading ? (
+                {isLoading ? (
+                  <div className="py-6 text-center text-sm text-neutral-500 dark:text-neutral-400">
                     <div className="flex items-center justify-center gap-2">
                       <div className="w-4 h-4 border-2 border-neutral-300 border-t-neutral-600 rounded-full animate-spin"/>
                       {finalLabels.loading}
                     </div>
-                  ) : (
-                    finalLabels.noTagsFound
-                  )}
-                </CommandEmpty>
-                <CommandGroup>
-                  {showCreateOption && (
-                    <CommandItem
-                      onSelect={handleCreateTag}
-                      className={cn(
-                        'cursor-pointer hover:bg-neutral-100 dark:hover:bg-neutral-700 py-2',
-                        selectedIndex === 0 && 'bg-neutral-100 dark:bg-neutral-700',
-                      )}
-                    >
-                      <Plus className="h-4 w-4 mr-2 text-neutral-500"/>
-                      <span className="text-sm">
-                        {finalLabels.create} "{searchQuery}"
-                      </span>
-                    </CommandItem>
-                  )}
-
-                  {filteredTags.map((tag, index) => {
-                    const itemIndex = showCreateOption ? index + 1 : index
-                    return (
+                  </div>
+                ) : filteredTags.length === 0 && !showCreateOption ? (
+                  <CommandEmpty className="py-6 text-center text-sm text-neutral-500 dark:text-neutral-400">
+                    {finalLabels.noTagsFound}
+                  </CommandEmpty>
+                ) : (
+                  <CommandGroup>
+                    {showCreateOption && (
                       <CommandItem
-                        key={tag.id}
-                        onSelect={() => handleTagSelect(tag)}
+                        onSelect={handleCreateTag}
                         className={cn(
                           'cursor-pointer hover:bg-neutral-100 dark:hover:bg-neutral-700 py-2',
-                          selectedIndex === itemIndex && 'bg-neutral-100 dark:bg-neutral-700',
+                          selectedIndex === 0 && 'bg-neutral-100 dark:bg-neutral-700',
                         )}
                       >
-                        <Hash className="h-4 w-4 mr-2 text-neutral-500"/>
-                        <span className="text-sm font-medium">{tag.title}</span>
-                        {tag.description && (
-                          <span className="text-xs text-neutral-500 ml-2">
-                            {tag.description}
-                          </span>
-                        )}
+                        <Plus className="h-4 w-4 mr-2 text-neutral-500"/>
+                        <span className="text-sm">
+                          {finalLabels.create} "{searchQuery}"
+                        </span>
                       </CommandItem>
-                    )
-                  })}
-                </CommandGroup>
+                    )}
+
+                    {filteredTags.map((tag, index) => {
+                      const itemIndex = showCreateOption ? index + 1 : index
+                      return (
+                        <CommandItem
+                          key={tag.id}
+                          onSelect={() => handleTagSelect(tag)}
+                          className={cn(
+                            'cursor-pointer hover:bg-neutral-100 dark:hover:bg-neutral-700 py-2',
+                            selectedIndex === itemIndex && 'bg-neutral-100 dark:bg-neutral-700',
+                          )}
+                        >
+                          <Hash className="h-4 w-4 mr-2 text-neutral-500"/>
+                          <span className="text-sm font-medium">{tag.title}</span>
+                          {tag.description && (
+                            <span className="text-xs text-neutral-500 ml-2">
+                              {tag.description}
+                            </span>
+                          )}
+                        </CommandItem>
+                      )
+                    })}
+                  </CommandGroup>
+                )}
               </CommandList>
             </Command>
           </PopoverContent>
