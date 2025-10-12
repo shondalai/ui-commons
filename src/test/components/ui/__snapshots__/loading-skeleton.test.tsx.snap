@@ -1,0 +1,368 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`LoadingSkeleton > Visual regression helpers > should render consistently for snapshot testing - card with all options 1`] = `
+<div
+  class="bg-white dark:bg-slate-900 border border-slate-200/50 dark:border-slate-700/50 rounded-lg shadow-sm p-6 "
+>
+  <div
+    class="animate-pulse"
+  >
+    <div
+      class="flex items-center space-x-4 mb-4"
+    >
+      <div
+        class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md w-10 h-10 rounded-full"
+      />
+      <div
+        class="flex-1 space-y-2"
+      >
+        <div
+          class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-4 w-32"
+        />
+        <div
+          class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-3 w-24"
+        />
+      </div>
+    </div>
+    <div
+      class="space-y-3"
+    >
+      <div
+        class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-3 w-full"
+      />
+      <div
+        class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-3 w-full"
+      />
+      <div
+        class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-3 w-full"
+      />
+    </div>
+    <div
+      class="grid grid-cols-3 gap-4 mt-6 pt-4 border-t border-slate-100 dark:border-slate-800"
+    >
+      <div
+        class="text-center space-y-1"
+      >
+        <div
+          class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-5 w-8 mx-auto"
+        />
+        <div
+          class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-3 w-12 mx-auto"
+        />
+      </div>
+      <div
+        class="text-center space-y-1"
+      >
+        <div
+          class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-5 w-8 mx-auto"
+        />
+        <div
+          class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-3 w-12 mx-auto"
+        />
+      </div>
+      <div
+        class="text-center space-y-1"
+      >
+        <div
+          class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-5 w-8 mx-auto"
+        />
+        <div
+          class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-3 w-12 mx-auto"
+        />
+      </div>
+    </div>
+    <div
+      class="flex justify-center space-x-3 mt-4"
+    >
+      <div
+        class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-8 w-16"
+      />
+      <div
+        class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-8 w-16"
+      />
+    </div>
+  </div>
+</div>
+`;
+
+exports[`LoadingSkeleton > Visual regression helpers > should render consistently for snapshot testing - default 1`] = `
+<div
+  class="space-y-3  animate-pulse"
+>
+  <div
+    class="space-y-2"
+  >
+    <div
+      class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-4 w-full"
+    />
+    <div
+      class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-4 w-3/4"
+    />
+  </div>
+  <div
+    class="space-y-2"
+  >
+    <div
+      class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-4 w-full"
+    />
+    <div
+      class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-4 w-3/4"
+    />
+  </div>
+  <div
+    class="space-y-2"
+  >
+    <div
+      class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-4 w-full"
+    />
+    <div
+      class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-4 w-3/4"
+    />
+  </div>
+</div>
+`;
+
+exports[`LoadingSkeleton > Visual regression helpers > should render consistently for snapshot testing - hero 1`] = `
+<div
+  class=""
+>
+  <div
+    class="bg-gradient-to-r from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700 rounded-lg p-8 mb-6"
+  >
+    <div
+      class="animate-pulse flex items-center space-x-6"
+    >
+      <div
+        class="w-20 h-20 bg-white/60 dark:bg-slate-600/60 rounded-xl flex items-center justify-center"
+      >
+        <div
+          class="w-16 h-16 bg-white/80 dark:bg-slate-500/80 rounded-full"
+        />
+      </div>
+      <div
+        class="flex-1 space-y-3"
+      >
+        <div
+          class="h-6 w-48 bg-white/80 dark:bg-slate-500/80 rounded"
+        />
+        <div
+          class="h-4 w-32 bg-white/60 dark:bg-slate-600/60 rounded"
+        />
+        <div
+          class="flex items-center space-x-4"
+        >
+          <div
+            class="h-3 w-24 bg-white/60 dark:bg-slate-600/60 rounded"
+          />
+          <div
+            class="h-3 w-20 bg-white/60 dark:bg-slate-600/60 rounded"
+          />
+        </div>
+      </div>
+      <div
+        class="flex space-x-2"
+      >
+        <div
+          class="h-8 w-8 bg-white/60 dark:bg-slate-600/60 rounded"
+        />
+        <div
+          class="h-8 w-16 bg-white/60 dark:bg-slate-600/60 rounded"
+        />
+      </div>
+    </div>
+  </div>
+  <div
+    class="grid grid-cols-1 lg:grid-cols-3 gap-6"
+  >
+    <div
+      class="lg:col-span-2 space-y-4"
+    >
+      <div
+        class="bg-white dark:bg-slate-900 border border-slate-200/50 dark:border-slate-700/50 rounded-lg shadow-sm p-4"
+      >
+        <div
+          class="animate-pulse space-y-3"
+        >
+          <div
+            class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-3 w-full"
+          />
+          <div
+            class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-3 w-full"
+          />
+          <div
+            class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-3 w-full"
+          />
+          <div
+            class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-3 w-full"
+          />
+          <div
+            class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-3 w-full"
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      class="space-y-4"
+    >
+      <div
+        class="bg-white dark:bg-slate-900 border border-slate-200/50 dark:border-slate-700/50 rounded-lg shadow-sm p-4"
+      >
+        <div
+          class="animate-pulse space-y-4"
+        >
+          <div
+            class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-4 w-20"
+          />
+          <div
+            class="grid grid-cols-2 gap-3"
+          >
+            <div
+              class="text-center space-y-2"
+            >
+              <div
+                class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-6 w-8 mx-auto"
+              />
+              <div
+                class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-2 w-full"
+              />
+            </div>
+            <div
+              class="text-center space-y-2"
+            >
+              <div
+                class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-6 w-8 mx-auto"
+              />
+              <div
+                class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-2 w-full"
+              />
+            </div>
+            <div
+              class="text-center space-y-2"
+            >
+              <div
+                class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-6 w-8 mx-auto"
+              />
+              <div
+                class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-2 w-full"
+              />
+            </div>
+            <div
+              class="text-center space-y-2"
+            >
+              <div
+                class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-6 w-8 mx-auto"
+              />
+              <div
+                class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-2 w-full"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`LoadingSkeleton > Visual regression helpers > should render consistently for snapshot testing - list 1`] = `
+<div
+  class="bg-white dark:bg-slate-900 border border-slate-200/50 dark:border-slate-700/50 rounded-lg shadow-sm divide-y divide-slate-100 dark:divide-slate-800 "
+>
+  <div
+    class="p-4"
+  >
+    <div
+      class="animate-pulse flex items-center space-x-4"
+    >
+      <div
+        class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md w-8 h-8 rounded-full flex-shrink-0"
+      />
+      <div
+        class="flex-1 space-y-2"
+      >
+        <div
+          class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-4 w-3/4"
+        />
+        <div
+          class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-3 w-1/2"
+        />
+      </div>
+      <div
+        class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-3 w-12"
+      />
+    </div>
+  </div>
+  <div
+    class="p-4"
+  >
+    <div
+      class="animate-pulse flex items-center space-x-4"
+    >
+      <div
+        class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md w-8 h-8 rounded-full flex-shrink-0"
+      />
+      <div
+        class="flex-1 space-y-2"
+      >
+        <div
+          class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-4 w-3/4"
+        />
+        <div
+          class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-3 w-1/2"
+        />
+      </div>
+      <div
+        class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-3 w-12"
+      />
+    </div>
+  </div>
+  <div
+    class="p-4"
+  >
+    <div
+      class="animate-pulse flex items-center space-x-4"
+    >
+      <div
+        class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md w-8 h-8 rounded-full flex-shrink-0"
+      />
+      <div
+        class="flex-1 space-y-2"
+      >
+        <div
+          class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-4 w-3/4"
+        />
+        <div
+          class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-3 w-1/2"
+        />
+      </div>
+      <div
+        class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-3 w-12"
+      />
+    </div>
+  </div>
+  <div
+    class="p-4"
+  >
+    <div
+      class="animate-pulse flex items-center space-x-4"
+    >
+      <div
+        class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md w-8 h-8 rounded-full flex-shrink-0"
+      />
+      <div
+        class="flex-1 space-y-2"
+      >
+        <div
+          class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-4 w-3/4"
+        />
+        <div
+          class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-3 w-1/2"
+        />
+      </div>
+      <div
+        class="bg-slate-200/70 dark:bg-slate-700/70 rounded-md h-3 w-12"
+      />
+    </div>
+  </div>
+</div>
+`;
