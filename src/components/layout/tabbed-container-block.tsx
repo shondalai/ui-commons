@@ -1,7 +1,39 @@
 import React from 'react'
 import { TabbedContainer } from '../ui/tabbed-container'
 import { renderBlock } from './block-registry'
-import { Activity, BarChart, Bookmark, FileText, Grid, Heart, Home, Layout, List, MessageCircle, Reply, Search, Settings, Star, Trophy, User, Users } from 'lucide-react'
+import {
+  Activity,
+  Award,
+  BarChart,
+  Bell,
+  BellRing,
+  Bookmark,
+  Calendar,
+  Clock,
+  File,
+  FileText,
+  Grid,
+  Heart,
+  Home,
+  Layout,
+  List,
+  Mail,
+  MessageCircle,
+  MessageSquare,
+  Reply,
+  Search,
+  Settings,
+  Shield,
+  Star,
+  Tag,
+  Target,
+  ThumbsUp,
+  TrendingUp,
+  Trophy,
+  User,
+  Users,
+  Zap,
+} from 'lucide-react'
 
 interface BlockConfig {
   id: string
@@ -47,6 +79,20 @@ const getIconComponent = (iconName: string) => {
     'List': List,
     'FileText': FileText,
     'BarChart': BarChart,
+    'Bell': Bell,
+    'BellRing': BellRing,
+    'Mail': Mail,
+    'MessageSquare': MessageSquare,
+    'Shield': Shield,
+    'Tag': Tag,
+    'ThumbsUp': ThumbsUp,
+    'TrendingUp': TrendingUp,
+    'Award': Award,
+    'Target': Target,
+    'Zap': Zap,
+    'Clock': Clock,
+    'Calendar': Calendar,
+    'File': File,
   }
   return iconMap[iconName as keyof typeof iconMap] || Layout
 }

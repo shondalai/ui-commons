@@ -60,7 +60,7 @@ export const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
     warning: 'bg-amber-600 hover:bg-amber-700 dark:bg-amber-500 dark:hover:bg-amber-600 text-white',
     info: 'bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white',
     danger: 'bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 text-white',
-    primary: 'bg-primary hover:bg-primary/90 text-primary-foreground',
+    primary: 'bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white',
   }
 
   return (
