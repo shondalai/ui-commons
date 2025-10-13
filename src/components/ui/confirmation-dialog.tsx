@@ -9,7 +9,7 @@ interface ConfirmationDialogProps {
   description?: string
   confirmLabel?: string
   cancelLabel?: string
-  variant?: 'destructive' | 'warning' | 'info' | 'danger'
+  variant?: 'destructive' | 'warning' | 'info' | 'primary' | 'danger'
   isLoading?: boolean
 }
 
@@ -52,6 +52,7 @@ export const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
     warning: 'text-amber-600 dark:text-amber-400',
     info: 'text-blue-600 dark:text-blue-400',
     danger: 'text-red-600 dark:text-red-400',
+    primary: 'text-gray-900 dark:text-gray-100',
   }
 
   const buttonStyles = {
@@ -59,6 +60,7 @@ export const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
     warning: 'bg-amber-600 hover:bg-amber-700 dark:bg-amber-500 dark:hover:bg-amber-600 text-white',
     info: 'bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white',
     danger: 'bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 text-white',
+    primary: 'bg-primary hover:bg-primary/90 text-primary-foreground',
   }
 
   return (
