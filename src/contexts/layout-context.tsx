@@ -27,6 +27,18 @@ export interface LayoutConfig {
    * Enable debug logging
    */
   debug?: boolean
+
+  /**
+   * Parameter name for the task/route (default: 'task')
+   * For custom routing like EasyForms, use 'task' with actionParamName
+   */
+  taskParamName?: string
+
+  /**
+   * Parameter name for the action (default: 'task')
+   * For custom routing like EasyForms api.proxy, use 'action'
+   */
+  actionParamName?: string
 }
 
 interface LayoutContextValue extends LayoutConfig {
@@ -94,4 +106,3 @@ export const useIsLayoutConfigured = (): boolean => {
   const context = useContext(LayoutContext)
   return context?.isConfigured || false
 }
-

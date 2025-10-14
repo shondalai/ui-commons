@@ -32,19 +32,32 @@ export class LayoutService {
     params: Record<string, any> = {},
   ): Promise<LayoutResponse> {
     try {
+      const taskParamName = this.config.taskParamName || 'task'
+      const actionParamName = this.config.actionParamName || 'task'
+
       const queryParams = new URLSearchParams({
-        task: 'layouts.getLayout',
         layout: layoutType,
         format: 'json',
         ...params,
       })
+
+      // Support both standard 'task' parameter and custom routing (e.g., 'api.proxy' with 'action')
+      if (taskParamName !== actionParamName) {
+        // Custom routing: use taskParamName for the route and actionParamName for the actual action
+        queryParams.append(taskParamName, 'api.proxy')
+        queryParams.append(actionParamName, 'layouts.getLayout')
+      } else {
+        // Standard routing: use taskParamName for the task
+        queryParams.append(taskParamName, 'layouts.getLayout')
+      }
 
       // Add CSRF token if available
       if (this.config.csrfToken) {
         queryParams.append(this.config.csrfToken, '1')
       }
 
-      const url = `${this.config.apiBaseUrl}&${queryParams.toString()}`
+      const separator = this.config.apiBaseUrl.includes('?') ? '&' : '?';
+      const url = `${this.config.apiBaseUrl}${separator}${queryParams.toString()}`;
 
       if (this.config.debug) {
         console.log(`[LayoutService] Fetching layout: ${layoutType}`, url)
@@ -126,8 +139,21 @@ export class LayoutService {
     areas: any[],
   ): Promise<LayoutResponse> {
     try {
+      const taskParamName = this.config.taskParamName || 'task'
+      const actionParamName = this.config.actionParamName || 'task'
+
       const formData = new FormData()
-      formData.append('task', 'layouts.saveLayout')
+
+      // Support both standard 'task' parameter and custom routing (e.g., 'api.proxy' with 'action')
+      if (taskParamName !== actionParamName) {
+        // Custom routing: use taskParamName for the route and actionParamName for the actual action
+        formData.append(taskParamName, 'api.proxy')
+        formData.append(actionParamName, 'layouts.saveLayout')
+      } else {
+        // Standard routing: use taskParamName for the task
+        formData.append(taskParamName, 'layouts.saveLayout')
+      }
+
       formData.append('layout', layoutType)
       formData.append('areas', JSON.stringify(areas))
       formData.append('format', 'json')
@@ -171,4 +197,3 @@ export class LayoutService {
 export const createLayoutService = (config: LayoutConfig): LayoutService => {
   return new LayoutService(config)
 }
-
