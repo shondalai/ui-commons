@@ -12,6 +12,7 @@ interface DynamicLayoutManagerProps {
   isLoading?: boolean
   loadingComponent?: React.ComponentType
   className?: string
+  fullWidth?: boolean // Whether to use full width (no max-width constraint)
 }
 
 // Static grid classes mapping for Tailwind CSS
@@ -46,6 +47,7 @@ const DynamicLayoutManager: React.FC<DynamicLayoutManagerProps> = ({
   isLoading = false,
   loadingComponent: LoadingComponent,
   className,
+  fullWidth = false,
 }) => {
   if (isLoading && LoadingComponent) {
     return <LoadingComponent/>
@@ -54,7 +56,10 @@ const DynamicLayoutManager: React.FC<DynamicLayoutManagerProps> = ({
   if (!areas || areas.length === 0) {
     return (
       <div className={cn('min-h-screen bg-background', className)}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className={cn(
+          'mx-auto px-4 sm:px-6 lg:px-8 py-8',
+          !fullWidth && 'max-w-7xl'
+        )}>
           <div className="text-center text-muted-foreground">
             <p>No layout configuration found. Please configure your page layout.</p>
           </div>
@@ -112,7 +117,10 @@ const DynamicLayoutManager: React.FC<DynamicLayoutManagerProps> = ({
       ))}
 
       {/* Render regular blocks in container */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+      <div className={cn(
+        'mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6',
+        !fullWidth && 'max-w-7xl'
+      )}>
         {Object.keys(regularRows).sort((a, b) => Number(a) - Number(b)).map(rowKey => {
           const rowAreas = regularRows[Number(rowKey)]
           return (
