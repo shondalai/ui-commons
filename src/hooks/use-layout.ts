@@ -51,9 +51,9 @@ export const useLayout = (
       const layoutService = createLayoutService(config)
       const response: LayoutResponse = await layoutService.fetchLayout(layoutType, params)
 
-      if (response.success && response.data) {
-        setAreas(response.data.areas || [])
-        setLayout(response.data.layout)
+      if (response.success && response.data && response.data.template) {
+        setAreas(response.data.template.areas || [])
+        setLayout(response.data.template.layout)
       } else {
         setError(response.error || 'Failed to load layout')
         setAreas([])
@@ -104,8 +104,8 @@ export const useMultipleLayouts = (
 
       Object.entries(responses).forEach(([layoutType, response]) => {
         newResults[layoutType] = {
-          areas: response.success && response.data ? response.data.areas : [],
-          layout: response.success && response.data ? response.data.layout : null,
+          areas: response.success && response.data && response.data.template ? response.data.template.areas : [],
+          layout: response.success && response.data && response.data.template ? response.data.template.layout : null,
           isLoading: false,
           error: response.success ? null : (response.error || 'Failed to load layout'),
           refetch: async () => {
@@ -116,8 +116,8 @@ export const useMultipleLayouts = (
                 ...prev,
                 [layoutType]: {
                   ...prev[layoutType],
-                  areas: newResponse.data!.areas,
-                  layout: newResponse.data!.layout,
+                  areas: newResponse.data!.template!.areas,
+                  layout: newResponse.data!.template!.layout,
                   error: null,
                 },
               }))

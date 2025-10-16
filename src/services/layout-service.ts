@@ -4,8 +4,10 @@ import { LayoutConfig } from '@/contexts/layout-context'
 export interface LayoutResponse {
   success: boolean
   data?: {
-    areas: any[]
-    layout?: any
+      template?: {
+          areas: any[]
+          layout?: any
+      }
   }
   error?: string
   message?: string
@@ -93,8 +95,10 @@ export class LayoutService {
       return {
         success: true,
         data: {
-          areas: data.data?.areas || data.areas || [],
-          layout: data.data?.layout || data.layout,
+            template: {
+                areas: data.data?.template?.areas || data.template.areas || [],
+                layout: data.data?.template?.layout || data.template.layout,
+            }
         },
       }
     }
