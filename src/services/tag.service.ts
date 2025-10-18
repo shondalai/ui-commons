@@ -29,14 +29,11 @@ export class TagService {
       }
     })
 
-    const token = (window as any).Joomla?.getOptions?.('csrf.token') || ''
-    if (token) {
-      queryString.append(token, '1')
-    }
-
     const url = `${baseUrl}&task=tag.get&format=json${
       queryString.toString() ? '&' + queryString.toString() : ''
     }`
+
+    const token = (window as any).Joomla?.getOptions?.('csrf.token') || ''
 
     try {
       const response = await fetch(url, {
@@ -44,6 +41,7 @@ export class TagService {
         headers: {
           'Content-Type': 'application/json',
           'X-Requested-With': 'XMLHttpRequest',
+          ...(token ? { 'X-CSRF-Token': token } : {}),
         },
       })
 
@@ -92,15 +90,8 @@ export class TagService {
     },
   ): Promise<{ success: boolean; data?: Tag; message?: string }> {
     const token = (window as any).Joomla?.getOptions?.('csrf.token') || ''
-    const queryParams = new URLSearchParams()
 
-    if (token) {
-      queryParams.append(token, '1')
-    }
-
-    const url = `${baseUrl}&task=tag.create&format=json${
-      queryParams.toString() ? '&' + queryParams.toString() : ''
-    }`
+    const url = `${baseUrl}&task=tag.create&format=json`
 
     try {
       const response = await fetch(url, {
@@ -108,6 +99,7 @@ export class TagService {
         headers: {
           'Content-Type': 'application/json',
           'X-Requested-With': 'XMLHttpRequest',
+          ...(token ? { 'X-CSRF-Token': token } : {}),
         },
         body: JSON.stringify(data),
       })
