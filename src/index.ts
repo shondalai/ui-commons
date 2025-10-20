@@ -26,6 +26,7 @@ export { Separator } from './components/ui/separator'
 export { Switch } from './components/ui/switch'
 export { Tabs, TabsList, TabsTrigger, TabsContent } from './components/ui/tabs'
 export { Textarea } from './components/ui/textarea'
+export { Progress } from './components/ui/progress'
 
 // New UI Components
 export { Pagination, CompactPagination, SimplePagination } from './components/ui/pagination'
