@@ -1,5 +1,5 @@
 // Generic Layout Hook - works with any Joomla component
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useLayoutConfig } from '@/contexts/layout-context'
 import { createLayoutService, LayoutResponse } from '@/services/layout-service'
 import { LayoutArea } from '@/types/layout.types'
@@ -43,7 +43,17 @@ export const useLayout = (
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
 
+  // Add ref to prevent duplicate calls during React.StrictMode
+  const isLoadingRef = useRef(false)
+  const paramsStringRef = useRef('')
+
   const fetchLayout = async () => {
+    // Prevent duplicate calls
+    if (isLoadingRef.current) {
+      return
+    }
+
+    isLoadingRef.current = true
     setIsLoading(true)
     setError(null)
 
@@ -66,11 +76,22 @@ export const useLayout = (
     }
     finally {
       setIsLoading(false)
+      isLoadingRef.current = false
     }
   }
 
   useEffect(() => {
-    fetchLayout()
+    const paramsString = JSON.stringify(params)
+
+    // Only fetch if params actually changed
+    if (paramsString !== paramsStringRef.current) {
+      paramsStringRef.current = paramsString
+      fetchLayout()
+    } else if (paramsStringRef.current === '') {
+      // First mount
+      paramsStringRef.current = paramsString
+      fetchLayout()
+    }
   }, [layoutType, JSON.stringify(params)])
 
   return {
@@ -149,4 +170,3 @@ export const useMultipleLayouts = (
 
   return results
 }
-
