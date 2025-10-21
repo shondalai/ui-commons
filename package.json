@@ -133,7 +133,7 @@
     "tailwindcss": "^4.1.13",
     "terser": "^5.44.0",
     "typescript": "^5.0.2",
-    "vite": "^7.1.5",
+    "vite": "^7.1.11",
     "vite-plugin-dts": "^4.3.0",
     "vitest": "^3.2.4"
   }
