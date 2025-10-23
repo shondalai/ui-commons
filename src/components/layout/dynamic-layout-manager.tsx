@@ -190,7 +190,32 @@ const AreaRenderer: React.FC<AreaRendererProps> = React.memo(({
     )
   }
 
-  // The area div gets the grid column span classes and contains blocks stacked vertically
+  // Check if blocks have grid spans configured - if so, use grid layout
+  const hasGridSpans = area.blocks.some(block => {
+    return block.grid_column_span && block.grid_column_span !== 12
+  })
+
+  // If blocks have grid configuration, create an internal grid
+  // The area respects its own grid_columns while containing an internal grid for the blocks
+  if (hasGridSpans) {
+    return (
+      <div className={cn(getResponsiveClasses())}>
+        <div className="grid grid-cols-12 gap-4">
+          {area.blocks.sort((a, b) => a.ordering - b.ordering).map(block => (
+            <BlockRenderer
+              key={block.id}
+              block={block}
+              contextData={contextData}
+              components={components}
+              componentProps={componentProps}
+            />
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  // Otherwise, stack blocks vertically (legacy behavior)
   return (
     <div className={cn('space-y-4', getResponsiveClasses())}>
       {area.blocks.sort((a, b) => a.ordering - b.ordering).map(block => (
@@ -251,7 +276,14 @@ const BlockRenderer: React.FC<BlockRendererProps> = React.memo(({
 
   // Apply block-level grid configuration and styling
   const getBlockClasses = () => {
-    let classes = 'w-full'
+    let classes = ''
+
+    // Apply grid column span from block config
+    if (block.grid_column_span) {
+      classes += getGridSpanClass(block.grid_column_span)
+    } else {
+      classes += 'w-full'
+    }
 
     // Apply CSS class from block config
     if (blockConfig.cssClass) {
@@ -280,6 +312,9 @@ const BlockRenderer: React.FC<BlockRendererProps> = React.memo(({
       }
       if (responsive.tablet_span) {
         classes += ` md:${getGridSpanClass(responsive.tablet_span)}`
+      }
+      if (responsive.desktop_span) {
+        classes += ` lg:${getGridSpanClass(responsive.desktop_span)}`
       }
     }
 
@@ -349,9 +384,10 @@ const BlockRenderer: React.FC<BlockRendererProps> = React.memo(({
       return blockRegistryComponent
     }
 
-    // For regular blocks, wrap with styling
+    // For regular blocks, wrap with styling AND grid classes
     return (
       <div
+        className={cn(getBlockClasses())}
         style={getBlockStyles()}
         {...getCustomAttributes()}
       >
