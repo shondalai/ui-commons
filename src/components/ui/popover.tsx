@@ -62,22 +62,53 @@ const PopoverContent = React.forwardRef<
   align?: 'start' | 'center' | 'end'
   sideOffset?: number
 }
->(({ className, align = 'center', sideOffset = 4, children, ...props }, ref) => {
-  const { open } = React.useContext(Popover)
+>(({ className, align = 'center', sideOffset = 4, children, ...props }, _ref) => {
+  const { open, setOpen } = React.useContext(Popover)
+  const contentRef = React.useRef<HTMLDivElement>(null)
+
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (contentRef.current && !contentRef.current.contains(event.target as Node)) {
+        setOpen(false)
+      }
+    }
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setOpen(false)
+      }
+    }
+
+    if (open) {
+      document.addEventListener('mousedown', handleClickOutside)
+      document.addEventListener('keydown', handleEscape)
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside)
+        document.removeEventListener('keydown', handleEscape)
+      }
+    }
+  }, [open, setOpen])
 
   if (!open) {
     return null
   }
 
+  const alignmentClasses = {
+    start: 'left-0',
+    center: 'left-1/2 -translate-x-1/2',
+    end: 'right-0',
+  }
+
   return (
     <div
-      ref={ref}
+      ref={contentRef}
       className={cn(
-        'z-50 w-72 rounded-md border bg-white dark:bg-neutral-800 p-4 text-neutral-900 dark:text-neutral-100 shadow-md outline-none',
-        'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
+        'absolute w-72 rounded-md border bg-white dark:bg-neutral-800 p-4 text-neutral-900 dark:text-neutral-100 shadow-lg outline-none',
+        'animate-in fade-in-0 zoom-in-95',
+        alignmentClasses[align],
         className,
       )}
-      style={{ marginTop: sideOffset }}
+      style={{ marginTop: sideOffset, zIndex: 9999 }}
       {...props}
     >
       {children}
