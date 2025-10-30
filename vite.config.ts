@@ -27,6 +27,13 @@ export default defineConfig({
             fileName: () => 'index.js',
         },
         rollupOptions: {
+            onwarn(warning, warn) {
+                // Suppress "use client" directive warnings from dependencies
+                if (warning.code === 'MODULE_LEVEL_DIRECTIVE' && warning.message.includes('"use client"')) {
+                    return;
+                }
+                warn(warning);
+            },
             external: [
                 'react',
                 'react-dom',
