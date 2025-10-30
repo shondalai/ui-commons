@@ -3,17 +3,43 @@
   "version": "1.0.4",
   "description": "Reusable UI components and utilities for Joomla 5 components",
   "type": "module",
-  "main": "./dist/ui-commons.umd.js",
-  "module": "./dist/ui-commons.es.js",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/ui-commons.es.js",
-      "require": "./dist/ui-commons.umd.js"
+      "import": "./dist/index.js"
     },
-    "./dist/ui-commons.css": "./dist/ui-commons.css",
-    "./dist/style.css": "./dist/ui-commons.css"
+    "./components/*": {
+      "types": "./dist/components/*.d.ts",
+      "import": "./dist/components/*.js"
+    },
+    "./contexts/*": {
+      "types": "./dist/contexts/*.d.ts",
+      "import": "./dist/contexts/*.js"
+    },
+    "./hooks/*": {
+      "types": "./dist/hooks/*.d.ts",
+      "import": "./dist/hooks/*.js"
+    },
+    "./services/*": {
+      "types": "./dist/services/*.d.ts",
+      "import": "./dist/services/*.js"
+    },
+    "./utils/*": {
+      "types": "./dist/utils/*.d.ts",
+      "import": "./dist/utils/*.js"
+    },
+    "./lib/*": {
+      "types": "./dist/lib/*.d.ts",
+      "import": "./dist/lib/*.js"
+    },
+    "./types/*": {
+      "types": "./dist/types/*.d.ts",
+      "import": "./dist/types/*.js"
+    },
+    "./style.css": "./dist/assets/ui-commons.css"
   },
   "files": [
     "dist"

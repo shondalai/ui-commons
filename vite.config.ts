@@ -12,7 +12,7 @@ export default defineConfig({
         dts({
             insertTypesEntry: true,
             include: ['src/**/*'],
-            exclude: ['src/**/*.test.ts', 'src/**/*.test.tsx'],
+            exclude: ['src/**/*.test.ts', 'src/**/*.test.tsx', 'src/test/**/*'],
         }),
     ],
     resolve: {
@@ -24,6 +24,7 @@ export default defineConfig({
         lib: {
             entry: resolve(__dirname, 'src/index.ts'),
             formats: ['es'],
+            fileName: () => 'index.js',
         },
         rollupOptions: {
             external: [
@@ -38,10 +39,20 @@ export default defineConfig({
                 'class-variance-authority',
                 'cmdk',
                 'lucide-react',
+                'date-fns',
+                /^@testing-library\/.*/,
+                /^@vitest\/.*/,
+                'vitest',
+                'happy-dom',
+                'jsdom',
+                /^chai.*/,
+                /^pretty-format.*/,
+                /^aria-query.*/,
+                /^dom-accessibility-api.*/,
             ],
             input: Object.fromEntries(
                 glob.sync('src/**/*.{ts,tsx}', {
-                    ignore: ['src/**/*.test.{ts,tsx}', 'src/**/*.d.ts']
+                    ignore: ['src/**/*.test.{ts,tsx}', 'src/**/*.d.ts', 'src/test/**/*']
                 }).map(file => [
                     // This removes `src/` and the file extension from each file
                     relative(
