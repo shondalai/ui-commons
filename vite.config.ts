@@ -2,6 +2,9 @@ import {defineConfig} from 'vite'
 import react from '@vitejs/plugin-react'
 import {resolve} from 'path'
 import dts from 'vite-plugin-dts'
+import {glob} from 'glob'
+import {fileURLToPath} from 'node:url'
+import {extname, relative} from 'path'
 
 export default defineConfig({
     plugins: [
@@ -20,33 +23,45 @@ export default defineConfig({
     build: {
         lib: {
             entry: resolve(__dirname, 'src/index.ts'),
-            name: 'UiCommons',
-            formats: ['es', 'umd'],
-            fileName: (format) => `ui-commons.${format}.js`,
+            formats: ['es'],
         },
         rollupOptions: {
-            external: ['react', 'react-dom', 'react/jsx-runtime'],
+            external: [
+                'react',
+                'react-dom',
+                'react/jsx-runtime',
+                /^@radix-ui\/.*/,
+                /^@lexical\/.*/,
+                'lexical',
+                'clsx',
+                'tailwind-merge',
+                'class-variance-authority',
+                'cmdk',
+                'lucide-react',
+            ],
+            input: Object.fromEntries(
+                glob.sync('src/**/*.{ts,tsx}', {
+                    ignore: ['src/**/*.test.{ts,tsx}', 'src/**/*.d.ts']
+                }).map(file => [
+                    // This removes `src/` and the file extension from each file
+                    relative(
+                        'src',
+                        file.slice(0, file.length - extname(file).length)
+                    ),
+                    // This expands to the absolute path of each entry file
+                    fileURLToPath(new URL(file, import.meta.url))
+                ])
+            ),
             output: {
-                globals: {
-                    react: 'React',
-                    'react-dom': 'ReactDOM',
-                    'react/jsx-runtime': 'react/jsx-runtime',
-                },
-                assetFileNames: (assetInfo) => {
-                    if (assetInfo.name === 'style.css') {
-                        return 'ui-commons.css'
-                    }
-                    return assetInfo.name || 'asset'
-                },
+                assetFileNames: 'assets/[name][extname]',
+                entryFileNames: '[name].js',
+                chunkFileNames: 'chunks/[name]-[hash].js',
+                preserveModules: true,
+                preserveModulesRoot: 'src',
             },
         },
         sourcemap: true,
-        minify: 'terser',
-        terserOptions: {
-            compress: {
-                drop_console: true,
-            },
-        },
+        minify: false, // Keep unminified for better tree-shaking
     },
 })
 

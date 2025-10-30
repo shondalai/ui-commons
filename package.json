@@ -1,6 +1,6 @@
 {
   "name": "@shondalai/ui-commons",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Reusable UI components and utilities for Joomla 5 components",
   "type": "module",
   "main": "./dist/ui-commons.umd.js",
@@ -126,6 +126,7 @@
     "autoprefixer": "^10.4.14",
     "eslint": "^9.35.0",
     "eslint-plugin-react-hooks": "^5.2.0",
+    "glob": "^11.0.3",
     "happy-dom": "^20.0.0",
     "jsdom": "^27.0.0",
     "lexical": "^0.36.2",

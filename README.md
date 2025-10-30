@@ -37,6 +37,7 @@ extensions.
 - ✅ **Joomla Integration**: Seamless integration with Joomla 5's APIs and systems
 - ✅ **Modern Stack**: Built with React 18, TypeScript, Tailwind CSS, and Radix UI
 - ✅ **Production Ready**: Battle-tested in CjForum production environment
+- ✅ **Tree-Shakable**: Modular build enables tree-shaking - import only what you need, reduce bundle size by up to 50%+
 
 ## ✨ Features
 
@@ -98,6 +99,33 @@ The library requires React 18+ as a peer dependency:
 ```bash
 npm install react@^18.0.0 react-dom@^18.0.0
 ```
+
+### Optional: Lexical (for RichTextEditor only)
+
+If you plan to use the `RichTextEditor` component, install Lexical:
+
+```bash
+npm install lexical @lexical/react @lexical/html @lexical/link @lexical/list @lexical/rich-text @lexical/selection @lexical/utils
+```
+
+## 🌲 Tree-Shaking & Bundle Size Optimization
+
+**v1.0.3+** introduces full tree-shaking support! Import only what you need:
+
+```typescript
+// ✅ Import only specific components - automatically tree-shaken
+import { Button, Card, Input } from '@shondalai/ui-commons';
+
+// ✅ Or use direct imports for maximum control
+import { Button } from '@shondalai/ui-commons/components/ui/button';
+```
+
+**Bundle Size Savings:**
+- **Without RichTextEditor**: Save ~450 KB by not importing Lexical
+- **Modular imports**: Only bundle what you actually use
+- **Lazy loading**: Load heavy components on demand
+
+📖 **[See Complete Tree-Shaking Guide](TREE_SHAKING.md)** for detailed optimization strategies.
 
 **Optional dependencies** (only if using RichTextEditor):
 
