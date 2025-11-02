@@ -17,6 +17,23 @@ export { Popover, PopoverTrigger, PopoverContent } from './components/ui/popover
 export { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from './components/ui/command'
 export { ConfirmationDialog } from './components/ui/confirmation-dialog'
 export { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from './components/ui/dialog'
+export {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuCheckboxItem,
+  DropdownMenuRadioItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuGroup,
+  DropdownMenuPortal,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuRadioGroup,
+} from './components/ui/dropdown-menu'
 export { ErrorMessage } from './components/ui/error-message'
 export { ScrollArea, ScrollBar } from './components/ui/scroll-area'
 export {
