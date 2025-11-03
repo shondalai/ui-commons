@@ -30,9 +30,9 @@ const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
 >(({ className, children, ...props }, ref) => {
-  // Get the portal container - use #easyforms-app if it exists, otherwise document.body
+  // Get the portal container - use #easyforms-app or .app-container if it exists, otherwise document.body
   const portalContainer = typeof document !== 'undefined'
-    ? document.querySelector('.app-container') || document.body
+    ? document.querySelector('#easyforms-app') || document.querySelector('.app-container') || document.body
     : undefined;
 
   return (

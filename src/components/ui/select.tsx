@@ -67,9 +67,9 @@ const SelectContent = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>
 >(({ className, children, position = 'popper', ...props }, ref) => {
-  // Get the portal container - use the app container if it exists, otherwise document.body
+  // Get the portal container - use #easyforms-app or .app-container if it exists, otherwise document.body
   const portalContainer = typeof document !== 'undefined'
-    ? document.querySelector('.app-container') || document.body
+    ? document.querySelector('#easyforms-app') || document.querySelector('.app-container') || document.body
     : undefined;
 
   return (
