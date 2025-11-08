@@ -36,7 +36,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   }, [])
 
   const showToast = useCallback(
-    (message: string, type: ToastType = 'info', duration: number = 4000) => {
+    (message: string, type: ToastType = 'info', duration: number = 8000) => {
       const id = `toast-${Date.now()}-${Math.random()}`
       const toast: Toast = { id, type, message, duration }
 
@@ -50,17 +50,17 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   )
 
   const showSuccess = useCallback(
-    (message: string, duration?: number) => showToast(message, 'success', duration),
+    (message: string, duration?: number) => showToast(message, 'success', duration || 8000),
     [showToast],
   )
 
   const showError = useCallback(
-    (message: string, duration?: number) => showToast(message, 'error', duration),
+    (message: string, duration?: number) => showToast(message, 'error', duration || 10000),
     [showToast],
   )
 
   const showInfo = useCallback(
-    (message: string, duration?: number) => showToast(message, 'info', duration),
+    (message: string, duration?: number) => showToast(message, 'info', duration || 8000),
     [showToast],
   )
 
@@ -117,7 +117,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       {children}
 
       {/* Toast Container - Premium minimalist design */}
-      <div className="fixed top-4 right-4 z-[9999] flex flex-col gap-2 pointer-events-none">
+      <div className="fixed top-4 right-4 z-[100000] flex flex-col gap-2 pointer-events-none">
         {toasts.map((toast) => {
           const styles = getToastStyles(toast.type)
 
