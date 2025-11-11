@@ -53,6 +53,8 @@ export { AttachmentManager } from './components/ui/attachment-manager'
 export { TagSelector } from './components/ui/tag-selector'
 export { RichTextEditor } from './components/ui/rich-text-editor'
 export type { RichTextEditorRef } from './components/ui/rich-text-editor'
+export { DateRangePicker } from './components/ui/date-range-picker'
+export type { DateRange } from './components/ui/date-range-picker'
 
 // Layout System - Block Registry
 export {
