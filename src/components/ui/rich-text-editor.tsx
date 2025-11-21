@@ -129,7 +129,7 @@ function ColorPicker ({
   type: 'text' | 'highlight'
 }) {
   return (
-    <div className="absolute top-full left-0 mt-1 p-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50 min-w-[160px]">
+    <div className="absolute top-full left-0 mt-1 p-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-[10000] min-w-[160px]">
       <div className="grid grid-cols-3 gap-1">
         {colors.map((color) => (
           <button
@@ -207,12 +207,12 @@ function LinkModal ({
     <>
       {/* Backdrop to close modal when clicking outside */}
       <div
-        className="fixed inset-0 z-40"
+        className="fixed inset-0 z-[9998]"
         onClick={onClose}
       />
       <div
         ref={modalRef}
-        className="fixed z-50 p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl min-w-[280px]"
+        className="fixed z-[9999] p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl min-w-[280px]"
       >
         <form onSubmit={handleSubmit} className="space-y-2">
           <div>
@@ -309,12 +309,12 @@ function ImageModal ({
     <>
       {/* Backdrop to close modal when clicking outside */}
       <div
-        className="fixed inset-0 z-40"
+        className="fixed inset-0 z-[9998]"
         onClick={onClose}
       />
       <div
         ref={modalRef}
-        className="fixed z-50 p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl min-w-[280px]"
+        className="fixed z-[9999] p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl min-w-[280px]"
       >
         <form onSubmit={handleSubmit} className="space-y-2">
           <div>
