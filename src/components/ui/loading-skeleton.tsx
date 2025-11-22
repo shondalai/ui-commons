@@ -1,7 +1,7 @@
 import React from 'react'
 
 interface LoadingSkeletonProps {
-  variant?: 'default' | 'card' | 'hero' | 'stats' | 'list' | 'grid' | 'user' | 'actions'
+  variant?: 'default' | 'card' | 'hero' | 'stats' | 'list' | 'grid' | 'user' | 'actions' | 'page' | 'formBuilder'
   lines?: number
   className?: string
   showAvatar?: boolean
@@ -269,6 +269,95 @@ const LoadingSkeleton: React.FC<LoadingSkeletonProps> = ({
             </div>
           )}
         </div>
+      </div>
+    )
+  }
+
+  // Page variant - Premium full-page loading with Swiss spa aesthetic
+  if (variant === 'page') {
+    return (
+      <div className={`min-h-screen bg-background ${className}`}>
+        <div className="container mx-auto max-w-[1600px] py-6 px-4 md:px-6 space-y-6">
+          {/* Header skeleton - Compact and refined */}
+          <div className="space-y-2.5 animate-pulse">
+            <div className="h-7 bg-gradient-to-r from-slate-200/70 via-slate-200/50 to-slate-200/70 dark:from-slate-700/70 dark:via-slate-700/50 dark:to-slate-700/70 rounded-md w-56 shimmer-effect" />
+            <div className="h-3.5 bg-gradient-to-r from-slate-200/50 via-slate-200/30 to-slate-200/50 dark:from-slate-700/50 dark:via-slate-700/30 dark:to-slate-700/50 rounded-md w-80 shimmer-effect" style={{ animationDelay: '0.1s' }} />
+          </div>
+
+          {/* Grid layout skeleton - Premium spacing */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 pt-2">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="space-y-3.5 animate-pulse" style={{ animationDelay: `${i * 0.1}s` }}>
+                <div className="h-44 bg-gradient-to-br from-slate-200/70 via-slate-200/50 to-slate-200/70 dark:from-slate-700/70 dark:via-slate-700/50 dark:to-slate-700/70 rounded-lg shimmer-effect border border-slate-200/30 dark:border-slate-700/30" />
+                <div className="space-y-2 px-1">
+                  <div className="h-3.5 bg-gradient-to-r from-slate-200/50 via-slate-200/30 to-slate-200/50 dark:from-slate-700/50 dark:via-slate-700/30 dark:to-slate-700/50 rounded w-3/4 shimmer-effect" />
+                  <div className="h-3 bg-gradient-to-r from-slate-200/40 via-slate-200/20 to-slate-200/40 dark:from-slate-700/40 dark:via-slate-700/20 dark:to-slate-700/40 rounded w-1/2 shimmer-effect" />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Additional content skeleton - Sleek and compact */}
+          <div className="space-y-5 pt-3 animate-pulse" style={{ animationDelay: '0.3s' }}>
+            <div className="h-56 bg-gradient-to-br from-slate-200/70 via-slate-200/50 to-slate-200/70 dark:from-slate-700/70 dark:via-slate-700/50 dark:to-slate-700/70 rounded-lg shimmer-effect border border-slate-200/30 dark:border-slate-700/30" />
+          </div>
+        </div>
+
+        <style>{`
+          @keyframes shimmer-slide {
+            0% {
+              background-position: -1000px 0;
+            }
+            100% {
+              background-position: 1000px 0;
+            }
+          }
+          .shimmer-effect {
+            background-size: 1000px 100%;
+            animation: shimmer-slide 2.5s infinite linear;
+          }
+        `}</style>
+      </div>
+    )
+  }
+
+  // Form Builder variant - 3-column layout for form builder
+  if (variant === 'formBuilder') {
+    return (
+      <div className={`container mx-auto px-4 py-6 ${className}`}>
+        <div className="grid grid-cols-12 gap-4 animate-pulse">
+          {/* Left sidebar - Field Library */}
+          <div className="col-span-12 lg:col-span-3 space-y-4">
+            <div className="h-48 bg-gradient-to-br from-slate-200/70 via-slate-200/50 to-slate-200/70 dark:from-slate-700/70 dark:via-slate-700/50 dark:to-slate-700/70 rounded-lg shimmer-effect border border-slate-200/30 dark:border-slate-700/30" />
+            <div className="h-64 bg-gradient-to-br from-slate-200/70 via-slate-200/50 to-slate-200/70 dark:from-slate-700/70 dark:via-slate-700/50 dark:to-slate-700/70 rounded-lg shimmer-effect border border-slate-200/30 dark:border-slate-700/30" />
+          </div>
+
+          {/* Center - Form Canvas */}
+          <div className="col-span-12 lg:col-span-6 space-y-4">
+            <div className="h-96 bg-gradient-to-br from-slate-200/70 via-slate-200/50 to-slate-200/70 dark:from-slate-700/70 dark:via-slate-700/50 dark:to-slate-700/70 rounded-lg shimmer-effect border border-slate-200/30 dark:border-slate-700/30" />
+          </div>
+
+          {/* Right sidebar - Field Properties */}
+          <div className="col-span-12 lg:col-span-3 space-y-4">
+            <div className="h-48 bg-gradient-to-br from-slate-200/70 via-slate-200/50 to-slate-200/70 dark:from-slate-700/70 dark:via-slate-700/50 dark:to-slate-700/70 rounded-lg shimmer-effect border border-slate-200/30 dark:border-slate-700/30" />
+            <div className="h-64 bg-gradient-to-br from-slate-200/70 via-slate-200/50 to-slate-200/70 dark:from-slate-700/70 dark:via-slate-700/50 dark:to-slate-700/70 rounded-lg shimmer-effect border border-slate-200/30 dark:border-slate-700/30" />
+          </div>
+        </div>
+
+        <style>{`
+          @keyframes shimmer-slide {
+            0% {
+              background-position: -1000px 0;
+            }
+            100% {
+              background-position: 1000px 0;
+            }
+          }
+          .shimmer-effect {
+            background-size: 1000px 100%;
+            animation: shimmer-slide 2.5s infinite linear;
+          }
+        `}</style>
       </div>
     )
   }
