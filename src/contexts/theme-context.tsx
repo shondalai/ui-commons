@@ -38,9 +38,14 @@ export function ThemeProvider ({
   const [actualTheme, setActualTheme] = useState<'light' | 'dark'>('light')
 
   useEffect(() => {
-    const root = window.document.documentElement
+    // Apply theme to both documentElement AND to the app root container
+    const htmlRoot = window.document.documentElement
 
-    root.classList.remove('light', 'dark')
+    // Find React app root container (common patterns)
+    const appRoot = document.getElementById('easycommerce-admin-root')
+                 || document.getElementById('easycommerce-store-root')
+                 || document.getElementById('root')
+                 || document.querySelector('[data-theme-root]')
 
     let resolvedTheme: 'light' | 'dark' = 'light'
 
@@ -50,7 +55,16 @@ export function ThemeProvider ({
       resolvedTheme = theme
     }
 
-    root.classList.add(resolvedTheme)
+    // Apply theme class to HTML root
+    htmlRoot.classList.remove('light', 'dark')
+    htmlRoot.classList.add(resolvedTheme)
+
+    // Apply theme class to app root container (for Joomla integration)
+    if (appRoot) {
+      appRoot.classList.remove('light', 'dark')
+      appRoot.classList.add(resolvedTheme)
+    }
+
     setActualTheme(resolvedTheme)
   }, [theme])
 

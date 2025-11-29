@@ -45,7 +45,7 @@ export const TagSelector: React.FC<TagSelectorProps> = ({
   const [availableTags, setAvailableTags] = useState<Tag[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState(-1)
-  const searchTimeoutRef = useRef<number>()
+  const searchTimeoutRef = useRef<number | null>(null)
 
   const defaultLabels = {
     selectTags: 'Add tags...',

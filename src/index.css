@@ -1,4 +1,6 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 /* UI Commons - Shared Tailwind styles for Joomla 5 components */
 

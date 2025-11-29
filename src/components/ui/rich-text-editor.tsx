@@ -123,36 +123,87 @@ function ColorPicker ({
   colors,
   onSelect,
   type,
+  buttonRef,
+  onClose,
 }: {
   colors: typeof TEXT_COLORS
   onSelect: (color: string) => void
   type: 'text' | 'highlight'
+  buttonRef?: React.RefObject<HTMLButtonElement | null>
+  onClose: () => void
 }) {
-  return (
-    <div className="absolute top-full left-0 mt-1 p-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-[10000] min-w-[160px]">
-      <div className="grid grid-cols-3 gap-1">
-        {colors.map((color) => (
-          <button
-            key={color.value}
-            type="button"
-            onClick={() => onSelect(color.value)}
-            className="h-7 rounded border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 transition-colors"
-            style={{
-              backgroundColor: color.value || (type === 'text' ? '#000' : 'transparent'),
-              color: color.value ? '#fff' : '#000',
-            }}
-            title={color.name}
-          >
-            {!color.value && (
-              <span className="text-xs text-gray-500 dark:text-gray-400">
-                {type === 'text' ? 'A' : '◌'}
-              </span>
-            )}
-          </button>
-        ))}
+  const pickerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    // Position picker based on button position
+    if (pickerRef.current && buttonRef?.current) {
+      const buttonRect = buttonRef.current.getBoundingClientRect()
+      pickerRef.current.style.top = `${buttonRect.bottom + 4}px`
+      pickerRef.current.style.left = `${buttonRect.left}px`
+    }
+  }, [buttonRef])
+
+  const handleColorSelect = (color: string) => {
+    onSelect(color)
+    onClose()
+  }
+
+  // Find the closest scoped container or fall back to document.body
+  const getPortalContainer = () => {
+    // Look for common scoped containers
+    const scopedContainers = [
+      '#easyforms-app',
+      '#aicore-app',
+      '[data-theme-root]',
+    ]
+
+    for (const selector of scopedContainers) {
+      const container = document.querySelector(selector)
+      if (container) return container
+    }
+
+    return document.body
+  }
+
+  const pickerContent = (
+    <>
+      {/* Backdrop to close picker when clicking outside */}
+      <div
+        className="fixed inset-0"
+        style={{ zIndex: 99998 }}
+        onClick={onClose}
+      />
+      <div
+        ref={pickerRef}
+        className="fixed p-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg min-w-[160px]"
+        style={{ zIndex: 99999 }}
+      >
+        <div className="grid grid-cols-3 gap-1">
+          {colors.map((color) => (
+            <button
+              key={color.value}
+              type="button"
+              onClick={() => handleColorSelect(color.value)}
+              className="h-7 rounded border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 transition-colors"
+              style={{
+                backgroundColor: color.value || (type === 'text' ? '#000' : 'transparent'),
+                color: color.value ? '#fff' : '#000',
+              }}
+              title={color.name}
+            >
+              {!color.value && (
+                <span className="text-xs text-gray-500 dark:text-gray-400">
+                  {type === 'text' ? 'A' : '◌'}
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   )
+
+  return createPortal(pickerContent, getPortalContainer())
 }
 
 // Link insertion modal
@@ -165,7 +216,7 @@ function LinkModal ({
   onInsert: (url: string, text?: string) => void
   onClose: () => void
   initialUrl?: string
-  buttonRef?: React.RefObject<HTMLButtonElement>
+  buttonRef?: React.RefObject<HTMLButtonElement | null>
 }) {
   const [url, setUrl] = useState(initialUrl)
   const [text, setText] = useState('')
@@ -203,16 +254,35 @@ function LinkModal ({
     onClose()
   }
 
+  // Find the closest scoped container or fall back to document.body
+  const getPortalContainer = () => {
+    // Look for common scoped containers
+    const scopedContainers = [
+      '#easyforms-app',
+      '#aicore-app',
+      '[data-theme-root]',
+    ]
+
+    for (const selector of scopedContainers) {
+      const container = document.querySelector(selector)
+      if (container) return container
+    }
+
+    return document.body
+  }
+
   const modalContent = (
     <>
       {/* Backdrop to close modal when clicking outside */}
       <div
-        className="fixed inset-0 z-[9998]"
+        className="fixed inset-0"
+        style={{ zIndex: 99998 }}
         onClick={onClose}
       />
       <div
         ref={modalRef}
-        className="fixed z-[9999] p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl min-w-[280px]"
+        className="fixed p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl min-w-[280px]"
+        style={{ zIndex: 99999 }}
       >
         <form onSubmit={handleSubmit} className="space-y-2">
           <div>
@@ -256,7 +326,7 @@ function LinkModal ({
     </>
   )
 
-  return createPortal(modalContent, document.body)
+  return createPortal(modalContent, getPortalContainer())
 }
 
 // Image insertion modal
@@ -267,7 +337,7 @@ function ImageModal ({
 }: {
   onInsert: (url: string, alt?: string) => void
   onClose: () => void
-  buttonRef?: React.RefObject<HTMLButtonElement>
+  buttonRef?: React.RefObject<HTMLButtonElement | null>
 }) {
   const [url, setUrl] = useState('')
   const [alt, setAlt] = useState('')
@@ -305,16 +375,35 @@ function ImageModal ({
     onClose()
   }
 
+  // Find the closest scoped container or fall back to document.body
+  const getPortalContainer = () => {
+    // Look for common scoped containers
+    const scopedContainers = [
+      '#easyforms-app',
+      '#aicore-app',
+      '[data-theme-root]',
+    ]
+
+    for (const selector of scopedContainers) {
+      const container = document.querySelector(selector)
+      if (container) return container
+    }
+
+    return document.body
+  }
+
   const modalContent = (
     <>
       {/* Backdrop to close modal when clicking outside */}
       <div
-        className="fixed inset-0 z-[9998]"
+        className="fixed inset-0"
+        style={{ zIndex: 99998 }}
         onClick={onClose}
       />
       <div
         ref={modalRef}
-        className="fixed z-[9999] p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl min-w-[280px]"
+        className="fixed p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl min-w-[280px]"
+        style={{ zIndex: 99999 }}
       >
         <form onSubmit={handleSubmit} className="space-y-2">
           <div>
@@ -358,7 +447,7 @@ function ImageModal ({
     </>
   )
 
-  return createPortal(modalContent, document.body)
+  return createPortal(modalContent, getPortalContainer())
 }
 
 // Enhanced Toolbar component with active states
@@ -378,6 +467,8 @@ function ToolbarPlugin ({ disabled, enabledButtons = {} }: { disabled?: boolean;
   const [showImageModal, setShowImageModal] = useState(false)
   const linkButtonRef = useRef<HTMLButtonElement>(null)
   const imageButtonRef = useRef<HTMLButtonElement>(null)
+  const textColorButtonRef = useRef<HTMLButtonElement>(null)
+  const highlightButtonRef = useRef<HTMLButtonElement>(null)
 
   // Default all buttons to enabled if not specified
   const buttons = {
@@ -637,10 +728,11 @@ function ToolbarPlugin ({ disabled, enabledButtons = {} }: { disabled?: boolean;
       {/* Colors */}
       {hasColors && (
         <>
-          <div className="flex items-center gap-0.5 relative">
+          <div className="flex items-center gap-0.5">
             {buttons.textColor && (
               <div className="relative">
                 <Button
+                  ref={textColorButtonRef}
                   type="button"
                   variant="ghost"
                   size="sm"
@@ -652,13 +744,20 @@ function ToolbarPlugin ({ disabled, enabledButtons = {} }: { disabled?: boolean;
                   <Palette className="h-3.5 w-3.5"/>
                 </Button>
                 {showColorPicker === 'text' && (
-                  <ColorPicker colors={TEXT_COLORS} onSelect={applyTextColor} type="text"/>
+                  <ColorPicker
+                    colors={TEXT_COLORS}
+                    onSelect={applyTextColor}
+                    type="text"
+                    buttonRef={textColorButtonRef}
+                    onClose={() => setShowColorPicker(null)}
+                  />
                 )}
               </div>
             )}
             {buttons.highlight && (
               <div className="relative">
                 <Button
+                  ref={highlightButtonRef}
                   type="button"
                   variant="ghost"
                   size="sm"
@@ -670,7 +769,13 @@ function ToolbarPlugin ({ disabled, enabledButtons = {} }: { disabled?: boolean;
                   <Highlighter className="h-3.5 w-3.5"/>
                 </Button>
                 {showColorPicker === 'highlight' && (
-                  <ColorPicker colors={HIGHLIGHT_COLORS} onSelect={applyHighlight} type="highlight"/>
+                  <ColorPicker
+                    colors={HIGHLIGHT_COLORS}
+                    onSelect={applyHighlight}
+                    type="highlight"
+                    buttonRef={highlightButtonRef}
+                    onClose={() => setShowColorPicker(null)}
+                  />
                 )}
               </div>
             )}
@@ -1174,9 +1279,9 @@ export const RichTextEditor = forwardRef<RichTextEditorRef, RichTextEditorProps>
   enabledButtons,
 }, ref) => {
   const [characterCount, setCharacterCount] = React.useState(0)
-  const clearContentRef = useRef<() => void>()
-  const loadContentRef = useRef<(html: string) => void>()
-  const editorRef = useRef<any>()
+  const clearContentRef = useRef<(() => void) | null>(null)
+  const loadContentRef = useRef<((html: string) => void) | null>(null)
+  const editorRef = useRef<any>(null)
 
   useImperativeHandle(ref, () => ({
     clearContent: () => {

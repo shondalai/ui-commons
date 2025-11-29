@@ -48,19 +48,19 @@ export const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
   }
 
   const variantStyles = {
-    destructive: 'text-red-600 dark:text-red-400',
-    warning: 'text-amber-600 dark:text-amber-400',
-    info: 'text-blue-600 dark:text-blue-400',
-    danger: 'text-red-600 dark:text-red-400',
-    primary: 'text-gray-900 dark:text-gray-100',
+    destructive: 'text-destructive',
+    warning: 'text-warning',
+    info: 'text-primary',
+    danger: 'text-destructive',
+    primary: 'text-foreground',
   }
 
   const buttonStyles = {
     destructive: 'bg-destructive hover:bg-destructive/90 text-destructive-foreground',
-    warning: 'bg-amber-600 hover:bg-amber-700 dark:bg-amber-500 dark:hover:bg-amber-600 text-white',
-    info: 'bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white',
-    danger: 'bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 text-white',
-    primary: 'bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white',
+    warning: 'bg-warning hover:bg-warning/90 text-white',
+    info: 'bg-primary hover:bg-primary/90 text-primary-foreground',
+    danger: 'bg-destructive hover:bg-destructive/90 text-destructive-foreground',
+    primary: 'bg-primary hover:bg-primary/90 text-primary-foreground',
   }
 
   return (
@@ -69,11 +69,11 @@ export const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
       onClick={() => onOpenChange(false)}
     >
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-sm"/>
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm"/>
 
       {/* Dialog */}
       <div
-        className="relative bg-white dark:bg-gray-900 rounded-xl shadow-2xl max-w-md w-full animate-in zoom-in-95 duration-200"
+        className="relative bg-white dark:bg-gray-900 rounded-xl shadow-premium-xl max-w-md w-full animate-in zoom-in-95 duration-200 border border-gray-200 dark:border-gray-700"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
@@ -97,13 +97,13 @@ export const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
           </div>
 
           {/* Title */}
-          <h3 id="dialog-title" className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
+          <h3 id="dialog-title" className="text-xl font-semibold text-foreground mb-2">
             {title}
           </h3>
 
           {/* Description */}
           {description && (
-            <p id="dialog-description" className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
+            <p id="dialog-description" className="text-sm text-muted-foreground leading-relaxed mb-6">
               {description}
             </p>
           )}
@@ -113,7 +113,7 @@ export const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
             <button
               onClick={() => onOpenChange(false)}
               disabled={isLoading}
-              className="flex-1 px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 px-4 py-2.5 text-sm font-medium text-foreground bg-muted hover:bg-muted/80 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {cancelLabel}
             </button>
