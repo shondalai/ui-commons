@@ -113,6 +113,7 @@ const DynamicLayoutManager: React.FC<DynamicLayoutManagerProps> = ({
           contextData={contextData}
           components={components}
           componentProps={componentProps}
+          isInGrid={false}
         />
       ))}
 
@@ -190,14 +191,17 @@ const AreaRenderer: React.FC<AreaRendererProps> = React.memo(({
     )
   }
 
-  // Check if blocks have grid spans configured - if so, use grid layout
-  const hasGridSpans = area.blocks.some(block => {
-    return block.grid_column_span && block.grid_column_span !== 12
-  })
+  // Check if blocks have DIFFERENT grid spans configured - if so, use grid layout
+  // Only create a nested grid if blocks actually need different column spans
+  const blockSpans = area.blocks.map(block => block.grid_column_span || 12)
+  const hasVariableGridSpans = blockSpans.length > 1 && new Set(blockSpans).size > 1
+  const hasNonFullWidthBlocks = area.blocks.some(block =>
+    block.grid_column_span && block.grid_column_span < 12
+  )
 
-  // If blocks have grid configuration, create an internal grid
+  // If blocks have different grid configurations, create an internal grid
   // The area respects its own grid_columns while containing an internal grid for the blocks
-  if (hasGridSpans) {
+  if (hasVariableGridSpans || hasNonFullWidthBlocks) {
     return (
       <div className={cn(getResponsiveClasses())}>
         <div className="grid grid-cols-12 gap-4">
@@ -208,6 +212,7 @@ const AreaRenderer: React.FC<AreaRendererProps> = React.memo(({
               contextData={contextData}
               components={components}
               componentProps={componentProps}
+              isInGrid={true}
             />
           ))}
         </div>
@@ -215,7 +220,7 @@ const AreaRenderer: React.FC<AreaRendererProps> = React.memo(({
     )
   }
 
-  // Otherwise, stack blocks vertically (legacy behavior)
+  // Otherwise, stack blocks vertically (legacy behavior) - no nested grid needed
   return (
     <div className={cn('space-y-4', getResponsiveClasses())}>
       {area.blocks.sort((a, b) => a.ordering - b.ordering).map(block => (
@@ -225,6 +230,7 @@ const AreaRenderer: React.FC<AreaRendererProps> = React.memo(({
           contextData={contextData}
           components={components}
           componentProps={componentProps}
+          isInGrid={false}
         />
       ))}
     </div>
@@ -236,6 +242,7 @@ interface BlockRendererProps {
   contextData: Record<string, any>
   components?: Record<string, React.ComponentType<any>>
   componentProps?: Record<string, any>
+  isInGrid?: boolean
 }
 
 const BlockRenderer: React.FC<BlockRendererProps> = React.memo(({
@@ -243,6 +250,7 @@ const BlockRenderer: React.FC<BlockRendererProps> = React.memo(({
   contextData,
   components,
   componentProps,
+  isInGrid = true, // Default to true for backward compatibility
 }) => {
   // Skip disabled blocks
   if (!block.enabled) {
@@ -278,11 +286,15 @@ const BlockRenderer: React.FC<BlockRendererProps> = React.memo(({
   const getBlockClasses = () => {
     let classes = ''
 
-    // Apply grid column span from block config
-    if (block.grid_column_span) {
+    // Only apply grid column span classes if the block is in a grid container
+    if (isInGrid && block.grid_column_span) {
       classes += getGridSpanClass(block.grid_column_span)
-    } else {
+    } else if (!isInGrid) {
+      // When not in a grid, use full width
       classes += 'w-full'
+    } else if (isInGrid && !block.grid_column_span) {
+      // In a grid but no span specified, default to full width
+      classes += 'col-span-12'
     }
 
     // Apply CSS class from block config
