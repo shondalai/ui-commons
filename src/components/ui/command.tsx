@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { cn } from '../../lib/utils'
+import {cn} from '../../lib/utils'
 
 const Command = React.forwardRef<
   HTMLDivElement,
@@ -8,7 +8,7 @@ const Command = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      'flex h-full w-full flex-col overflow-hidden rounded-md bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100',
+      'flex w-full flex-col overflow-hidden rounded-md bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100',
       className,
     )}
     {...props}

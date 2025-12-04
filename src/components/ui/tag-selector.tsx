@@ -1,11 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { Badge } from './badge'
-import { Button } from './button'
-import { cn } from '../../lib/utils'
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from './command'
-import { Popover, PopoverContent, PopoverTrigger } from './popover'
-import { ChevronDown, Hash, Plus, X } from 'lucide-react'
-import { Tag } from '../../types/common.types'
+import React, {useEffect, useRef, useState} from 'react'
+import {Badge} from './badge'
+import {Button} from './button'
+import {cn} from '../../lib/utils'
+import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList} from './command'
+import {Popover, PopoverContent, PopoverTrigger} from './popover'
+import {ChevronDown, Hash, Plus, X} from 'lucide-react'
+import {Tag} from '../../types/common.types'
 
 interface TagSelectorProps {
   selectedTags: Tag[]
@@ -214,30 +214,35 @@ export const TagSelector: React.FC<TagSelectorProps> = ({
 
       {/* Tag Selector */}
       {!disabled && selectedTags.length < maxTags && (
-        <Popover open={open} onOpenChange={handleOpenChange}>
-          <PopoverTrigger
-            className="w-full justify-between h-10 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 hover:border-neutral-300 dark:hover:border-neutral-600 rounded-lg transition-all duration-200 flex items-center px-3"
-            role="combobox"
-            aria-expanded={open}
-          >
-            <div className="flex items-center gap-2 text-neutral-600 dark:text-neutral-400">
-              <Hash className="h-4 w-4"/>
-              <span className="text-sm">
-                {placeholder || finalLabels.selectTags}
-              </span>
-            </div>
-            <ChevronDown className="h-4 w-4 text-neutral-400"/>
-          </PopoverTrigger>
-          <PopoverContent className="w-full p-0 border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 rounded-xl shadow-xl" align="start">
-            <Command>
-              <CommandInput
-                placeholder={finalLabels.searchTags}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={handleKeyDown}
-                className="border-0 focus:ring-0 text-sm"
-              />
-              <CommandList>
+        <div className="relative">
+          <Popover open={open} onOpenChange={handleOpenChange}>
+            <PopoverTrigger
+              className="w-full justify-between h-10 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 hover:border-neutral-300 dark:hover:border-neutral-600 rounded-lg transition-all duration-200 flex items-center px-3"
+              role="combobox"
+              aria-expanded={open}
+            >
+              <div className="flex items-center gap-2 text-neutral-600 dark:text-neutral-400">
+                <Hash className="h-4 w-4"/>
+                <span className="text-sm">
+                  {placeholder || finalLabels.selectTags}
+                </span>
+              </div>
+              <ChevronDown className="h-4 w-4 text-neutral-400"/>
+            </PopoverTrigger>
+            <PopoverContent className="w-full p-0 border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 rounded-xl shadow-xl" align="start">
+              <Command className="flex flex-col !overflow-visible">
+                <CommandInput
+                  placeholder={finalLabels.searchTags}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  className="border-0 focus:ring-0 text-sm flex-shrink-0"
+                />
+                <div
+                  className="overflow-y-auto overflow-x-hidden tag-selector-scroll"
+                  style={{ maxHeight: '250px' }}
+                >
+                  <CommandList className="!max-h-none !overflow-visible">
                 {isLoading ? (
                   <div className="py-6 text-center text-sm text-neutral-500 dark:text-neutral-400">
                     <div className="flex items-center justify-center gap-2">
@@ -290,9 +295,11 @@ export const TagSelector: React.FC<TagSelectorProps> = ({
                   </CommandGroup>
                 )}
               </CommandList>
+                </div>
             </Command>
           </PopoverContent>
         </Popover>
+        </div>
       )}
 
       {/* Tag limit indicator */}
