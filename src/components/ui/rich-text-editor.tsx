@@ -1,17 +1,17 @@
-import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
-import { createPortal } from 'react-dom'
-import { $generateHtmlFromNodes, $generateNodesFromDOM } from '@lexical/html'
-import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext'
-import { LexicalComposer } from '@lexical/react/LexicalComposer'
-import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin'
-import { ContentEditable } from '@lexical/react/LexicalContentEditable'
-import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin'
-import { ListPlugin } from '@lexical/react/LexicalListPlugin'
-import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin'
-import { TabIndentationPlugin } from '@lexical/react/LexicalTabIndentationPlugin'
-import { $createQuoteNode, HeadingNode, QuoteNode } from '@lexical/rich-text'
-import { INSERT_ORDERED_LIST_COMMAND, INSERT_UNORDERED_LIST_COMMAND, ListItemNode, ListNode, REMOVE_LIST_COMMAND } from '@lexical/list'
-import { AutoLinkNode, LinkNode, TOGGLE_LINK_COMMAND } from '@lexical/link'
+import React, {forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState} from 'react'
+import {createPortal} from 'react-dom'
+import {$generateHtmlFromNodes, $generateNodesFromDOM} from '@lexical/html'
+import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext'
+import {LexicalComposer} from '@lexical/react/LexicalComposer'
+import {RichTextPlugin} from '@lexical/react/LexicalRichTextPlugin'
+import {ContentEditable} from '@lexical/react/LexicalContentEditable'
+import {HistoryPlugin} from '@lexical/react/LexicalHistoryPlugin'
+import {ListPlugin} from '@lexical/react/LexicalListPlugin'
+import {LinkPlugin} from '@lexical/react/LexicalLinkPlugin'
+import {TabIndentationPlugin} from '@lexical/react/LexicalTabIndentationPlugin'
+import {$createQuoteNode, HeadingNode, QuoteNode} from '@lexical/rich-text'
+import {INSERT_ORDERED_LIST_COMMAND, INSERT_UNORDERED_LIST_COMMAND, ListItemNode, ListNode, REMOVE_LIST_COMMAND} from '@lexical/list'
+import {AutoLinkNode, LinkNode, TOGGLE_LINK_COMMAND} from '@lexical/link'
 import {
   $createParagraphNode,
   $createTextNode,
@@ -19,16 +19,15 @@ import {
   $getSelection,
   $isElementNode,
   $isRangeSelection,
-  $isTextNode,
   ElementFormatType,
   FORMAT_ELEMENT_COMMAND,
   FORMAT_TEXT_COMMAND,
   INDENT_CONTENT_COMMAND,
   OUTDENT_CONTENT_COMMAND,
 } from 'lexical'
-import { $setBlocksType } from '@lexical/selection'
-import { $getNearestNodeOfType } from '@lexical/utils'
-import { Button } from './button'
+import {$patchStyleText, $setBlocksType} from '@lexical/selection'
+import {$getNearestNodeOfType} from '@lexical/utils'
+import {Button} from './button'
 import {
   AlignCenter,
   AlignJustify,
@@ -175,16 +174,16 @@ function ColorPicker ({
       />
       <div
         ref={pickerRef}
-        className="fixed p-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg min-w-[160px]"
-        style={{ zIndex: 99999 }}
+        className="fixed p-3 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg shadow-lg min-w-[220px]"
+        style={{ zIndex: 99999, minWidth: '220px', display: 'flex', flexDirection: 'column' }}
       >
-        <div className="grid grid-cols-3 gap-1">
+        <div className="grid grid-cols-3 gap-2">
           {colors.map((color) => (
             <button
               key={color.value}
               type="button"
               onClick={() => handleColorSelect(color.value)}
-              className="h-7 rounded border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 transition-colors"
+              className="h-9 rounded border border-gray-200 dark:border-slate-700 hover:!border-gray-400 dark:!hover:border-gray-500 transition-colors hover:scale-105"
               style={{
                 backgroundColor: color.value || (type === 'text' ? '#000' : 'transparent'),
                 color: color.value ? '#fff' : '#000',
@@ -281,7 +280,7 @@ function LinkModal ({
       />
       <div
         ref={modalRef}
-        className="fixed p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl min-w-[280px]"
+        className="fixed p-3 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg shadow-xl min-w-[280px]"
         style={{ zIndex: 99999 }}
       >
         <form onSubmit={handleSubmit} className="space-y-2">
@@ -292,7 +291,7 @@ function LinkModal ({
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               placeholder="https://example.com"
-              className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-slate-600 rounded bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-blue-500"
               autoFocus
             />
           </div>
@@ -303,7 +302,7 @@ function LinkModal ({
               value={text}
               onChange={(e) => setText(e.target.value)}
               placeholder="Link text"
-              className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-slate-600 rounded bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
           <div className="flex gap-2 justify-end pt-1">
@@ -402,7 +401,7 @@ function ImageModal ({
       />
       <div
         ref={modalRef}
-        className="fixed p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl min-w-[280px]"
+        className="fixed p-3 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg shadow-xl min-w-[280px]"
         style={{ zIndex: 99999 }}
       >
         <form onSubmit={handleSubmit} className="space-y-2">
@@ -413,7 +412,7 @@ function ImageModal ({
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               placeholder="https://example.com/image.jpg"
-              className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-slate-600 rounded bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-blue-500"
               autoFocus
             />
           </div>
@@ -424,7 +423,7 @@ function ImageModal ({
               value={alt}
               onChange={(e) => setAlt(e.target.value)}
               placeholder="Description"
-              className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-slate-600 rounded bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
           <div className="flex gap-2 justify-end pt-1">
@@ -597,11 +596,13 @@ function ToolbarPlugin ({ disabled, enabledButtons = {} }: { disabled?: boolean;
     editor.update(() => {
       const selection = $getSelection()
       if ($isRangeSelection(selection)) {
-        selection.getNodes().forEach((node) => {
-          if ($isTextNode(node)) {
-            node.setStyle(color ? `color: ${color}` : '')
-          }
-        })
+        if (color) {
+          // Apply color style to selected text only
+          $patchStyleText(selection, { color })
+        } else {
+          // Remove color style from selected text
+          $patchStyleText(selection, { color: null })
+        }
       }
     })
     setShowColorPicker(null)
@@ -611,22 +612,13 @@ function ToolbarPlugin ({ disabled, enabledButtons = {} }: { disabled?: boolean;
     editor.update(() => {
       const selection = $getSelection()
       if ($isRangeSelection(selection)) {
-        selection.getNodes().forEach((node) => {
-          if ($isTextNode(node)) {
-            const currentStyle = node.getStyle()
-            const colorMatch = currentStyle.match(/color:\s*([^;]+)/)
-            const textColor = colorMatch ? colorMatch[1].trim() : ''
-
-            let newStyle = ''
-            if (color) {
-              newStyle = `background-color: ${color};`
-            }
-            if (textColor) {
-              newStyle += ` color: ${textColor};`
-            }
-            node.setStyle(newStyle.trim())
-          }
-        })
+        if (color) {
+          // Apply background color to selected text only
+          $patchStyleText(selection, { 'background-color': color })
+        } else {
+          // Remove background color from selected text
+          $patchStyleText(selection, { 'background-color': null })
+        }
       }
     })
     setShowColorPicker(null)
@@ -661,7 +653,7 @@ function ToolbarPlugin ({ disabled, enabledButtons = {} }: { disabled?: boolean;
   }, [editor])
 
   return (
-    <div className="flex items-center gap-0.5 px-2 py-1.5 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 flex-wrap">
+    <div className="flex items-center gap-0.5 px-2 py-1.5 border-b border-gray-200 dark:border-slate-700 !bg-slate-50 dark:!bg-slate-900 flex-wrap">
       {/* Text Formatting */}
       {hasTextFormatting && (
         <>
@@ -673,7 +665,7 @@ function ToolbarPlugin ({ disabled, enabledButtons = {} }: { disabled?: boolean;
                 size="sm"
                 onClick={() => formatText('bold')}
                 disabled={disabled}
-                className={`h-7 w-7 p-0 ${activeStates.isBold ? 'bg-gray-200 dark:bg-gray-700' : ''}`}
+                className={`h-7 w-7 p-0 ${activeStates.isBold ? 'bg-gray-200 dark:bg-slate-700' : ''}`}
                 title="Bold (Ctrl+B)"
               >
                 <Bold className="h-3.5 w-3.5"/>
@@ -686,7 +678,7 @@ function ToolbarPlugin ({ disabled, enabledButtons = {} }: { disabled?: boolean;
                 size="sm"
                 onClick={() => formatText('italic')}
                 disabled={disabled}
-                className={`h-7 w-7 p-0 ${activeStates.isItalic ? 'bg-gray-200 dark:bg-gray-700' : ''}`}
+                className={`h-7 w-7 p-0 ${activeStates.isItalic ? 'bg-gray-200 dark:bg-slate-700' : ''}`}
                 title="Italic (Ctrl+I)"
               >
                 <Italic className="h-3.5 w-3.5"/>
@@ -699,7 +691,7 @@ function ToolbarPlugin ({ disabled, enabledButtons = {} }: { disabled?: boolean;
                 size="sm"
                 onClick={() => formatText('underline')}
                 disabled={disabled}
-                className={`h-7 w-7 p-0 ${activeStates.isUnderline ? 'bg-gray-200 dark:bg-gray-700' : ''}`}
+                className={`h-7 w-7 p-0 ${activeStates.isUnderline ? 'bg-gray-200 dark:bg-slate-700' : ''}`}
                 title="Underline (Ctrl+U)"
               >
                 <Underline className="h-3.5 w-3.5"/>
@@ -712,7 +704,7 @@ function ToolbarPlugin ({ disabled, enabledButtons = {} }: { disabled?: boolean;
                 size="sm"
                 onClick={() => formatText('strikethrough')}
                 disabled={disabled}
-                className={`h-7 w-7 p-0 ${activeStates.isStrikethrough ? 'bg-gray-200 dark:bg-gray-700' : ''}`}
+                className={`h-7 w-7 p-0 ${activeStates.isStrikethrough ? 'bg-gray-200 dark:bg-slate-700' : ''}`}
                 title="Strikethrough"
               >
                 <Strikethrough className="h-3.5 w-3.5"/>
@@ -797,7 +789,7 @@ function ToolbarPlugin ({ disabled, enabledButtons = {} }: { disabled?: boolean;
                 size="sm"
                 onClick={() => formatAlignment('left')}
                 disabled={disabled}
-                className={`h-7 w-7 p-0 ${alignment === 'left' ? 'bg-gray-200 dark:bg-gray-700' : ''}`}
+                className={`h-7 w-7 p-0 ${alignment === 'left' ? 'bg-gray-200 dark:bg-slate-700' : ''}`}
                 title="Align Left"
               >
                 <AlignLeft className="h-3.5 w-3.5"/>
@@ -810,7 +802,7 @@ function ToolbarPlugin ({ disabled, enabledButtons = {} }: { disabled?: boolean;
                 size="sm"
                 onClick={() => formatAlignment('center')}
                 disabled={disabled}
-                className={`h-7 w-7 p-0 ${alignment === 'center' ? 'bg-gray-200 dark:bg-gray-700' : ''}`}
+                className={`h-7 w-7 p-0 ${alignment === 'center' ? 'bg-gray-200 dark:bg-slate-700' : ''}`}
                 title="Align Center"
               >
                 <AlignCenter className="h-3.5 w-3.5"/>
@@ -823,7 +815,7 @@ function ToolbarPlugin ({ disabled, enabledButtons = {} }: { disabled?: boolean;
                 size="sm"
                 onClick={() => formatAlignment('right')}
                 disabled={disabled}
-                className={`h-7 w-7 p-0 ${alignment === 'right' ? 'bg-gray-200 dark:bg-gray-700' : ''}`}
+                className={`h-7 w-7 p-0 ${alignment === 'right' ? 'bg-gray-200 dark:bg-slate-700' : ''}`}
                 title="Align Right"
               >
                 <AlignRight className="h-3.5 w-3.5"/>
@@ -836,7 +828,7 @@ function ToolbarPlugin ({ disabled, enabledButtons = {} }: { disabled?: boolean;
                 size="sm"
                 onClick={() => formatAlignment('justify')}
                 disabled={disabled}
-                className={`h-7 w-7 p-0 ${alignment === 'justify' ? 'bg-gray-200 dark:bg-gray-700' : ''}`}
+                className={`h-7 w-7 p-0 ${alignment === 'justify' ? 'bg-gray-200 dark:bg-slate-700' : ''}`}
                 title="Justify"
               >
                 <AlignJustify className="h-3.5 w-3.5"/>
@@ -860,7 +852,7 @@ function ToolbarPlugin ({ disabled, enabledButtons = {} }: { disabled?: boolean;
                 size="sm"
                 onClick={() => insertList('ul')}
                 disabled={disabled}
-                className={`h-7 w-7 p-0 ${blockType === 'ul' ? 'bg-gray-200 dark:bg-gray-700' : ''}`}
+                className={`h-7 w-7 p-0 ${blockType === 'ul' ? 'bg-gray-200 dark:bg-slate-700' : ''}`}
                 title="Bullet List"
               >
                 <ListIcon className="h-3.5 w-3.5"/>
@@ -873,7 +865,7 @@ function ToolbarPlugin ({ disabled, enabledButtons = {} }: { disabled?: boolean;
                 size="sm"
                 onClick={() => insertList('ol')}
                 disabled={disabled}
-                className={`h-7 w-7 p-0 ${blockType === 'ol' ? 'bg-gray-200 dark:bg-gray-700' : ''}`}
+                className={`h-7 w-7 p-0 ${blockType === 'ol' ? 'bg-gray-200 dark:bg-slate-700' : ''}`}
                 title="Numbered List"
               >
                 <ListOrdered className="h-3.5 w-3.5"/>
@@ -886,7 +878,7 @@ function ToolbarPlugin ({ disabled, enabledButtons = {} }: { disabled?: boolean;
                 size="sm"
                 onClick={formatQuote}
                 disabled={disabled}
-                className={`h-7 w-7 p-0 ${blockType === 'quote' ? 'bg-gray-200 dark:bg-gray-700' : ''}`}
+                className={`h-7 w-7 p-0 ${blockType === 'quote' ? 'bg-gray-200 dark:bg-slate-700' : ''}`}
                 title="Quote"
               >
                 <Quote className="h-3.5 w-3.5"/>
@@ -1026,7 +1018,7 @@ function CharacterCountPlugin ({
   const isOverLimit = maxCharacters ? characterCount > maxCharacters : false
 
   return (
-    <div className="flex justify-between items-center px-3 py-1.5 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
+    <div className="flex justify-between items-center px-3 py-1.5 border-t border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-gray-900/50">
       <div className={`text-xs ${isOverLimit ? 'text-red-600 dark:text-red-400' : 'text-gray-500 dark:text-gray-400'}`}>
         {characterCount}{maxCharacters ? ` / ${maxCharacters}` : ''}{!maxCharacters && ` ${labels?.characterCount || 'characters'}`}
         {isOverLimit && (
@@ -1331,7 +1323,7 @@ export const RichTextEditor = forwardRef<RichTextEditorRef, RichTextEditorProps>
         italic: 'italic',
         underline: 'underline',
         strikethrough: 'line-through',
-        code: 'bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm font-mono',
+        code: 'bg-gray-100 dark:bg-slate-800 px-1 py-0.5 rounded text-sm font-mono',
       },
     },
     nodes: [
@@ -1351,19 +1343,25 @@ export const RichTextEditor = forwardRef<RichTextEditorRef, RichTextEditorProps>
   }
 
   return (
-    <div className={`border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow ${className}`}>
+    <div className={`border border-gray-200 dark:border-slate-700 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow ${className}`}>
       <LexicalComposer initialConfig={initialConfig}>
         {showToolbar && <ToolbarPlugin disabled={disabled} enabledButtons={enabledButtons}/>}
 
-        <div className="relative">
+        <div
+          className="relative overflow-hidden"
+          style={{ minHeight: '140px', maxHeight: '500px', display: 'flex', flexDirection: 'column' }}
+        >
           <RichTextPlugin
             contentEditable={
               <ContentEditable
                 ref={editorRef}
-                className={`outline-none px-3 py-2.5 min-h-[140px] max-h-[500px] overflow-y-auto ${
-                  disabled ? 'bg-gray-50 dark:bg-gray-900 cursor-not-allowed' : 'bg-white dark:bg-gray-950'
-                } ${isCharacterLimitExceeded ? 'border-red-300 dark:border-red-700' : ''} text-gray-900 dark:text-gray-100 text-sm leading-relaxed`}
-                style={{ direction: 'ltr', textAlign: 'left' }}
+                className={`rte-content-editable outline-none px-3 py-2.5 flex-1 overflow-y-auto ${
+                  disabled ? 'bg-gray-50 dark:bg-slate-900 cursor-not-allowed' : '!bg-white dark:!bg-slate-950'
+                } ${isCharacterLimitExceeded ? 'border-red-300 dark:border-red-700' : ''} !text-gray-900 dark:!text-white text-sm leading-relaxed`}
+                style={{
+                  direction: 'ltr',
+                  textAlign: 'left'
+                }}
                 placeholder={
                   <div className="absolute top-2.5 left-3 text-gray-400 dark:text-gray-500 pointer-events-none select-none text-sm">
                     {placeholder}

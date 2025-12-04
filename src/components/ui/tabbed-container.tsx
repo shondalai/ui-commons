@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
-import { ChevronRight } from 'lucide-react'
-import { cn } from '../../lib/utils'
-import { LoadingSkeleton } from './loading-skeleton'
+import React, {useState} from 'react'
+import {ChevronRight} from 'lucide-react'
+import {cn} from '../../lib/utils'
+import {LoadingSkeleton} from './loading-skeleton'
 
 export interface TabConfig {
   id: string
@@ -111,15 +111,15 @@ export const TabbedContainer: React.FC<TabbedContainerProps> = ({
         <div className={cn(
           'flex gap-6',
           isVerticalRight ? 'flex-row-reverse' : 'flex-row',
-          'bg-white dark:bg-gray-900 rounded-lg border border-gray-200/60 dark:border-gray-800',
+          'bg-white dark:bg-slate-900 rounded-lg border border-gray-200 dark:border-slate-700',
           className,
         )}>
           {/* Vertical Tab Navigation */}
           <div className={cn(
             'flex-shrink-0 w-48 lg:w-56',
-            'border-gray-200/60 dark:border-gray-800',
+            'border-gray-200 dark:border-slate-700',
             isVerticalRight ? 'border-l' : 'border-r',
-            'bg-gray-50/30 dark:bg-gray-800/20',
+            'bg-gray-50 dark:bg-slate-800',
             tabsClassName,
           )}>
             <nav className="flex flex-col p-2 space-y-1" role="tablist">
@@ -137,15 +137,15 @@ export const TabbedContainer: React.FC<TabbedContainerProps> = ({
                     className={cn(
                       'group relative flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg',
                       'transition-all duration-200 ease-out',
-                      'focus:outline, focus:ring-2 focus:ring-blue-500/20',
+                      'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1',
                       !isActive && [
                         'text-gray-600 dark:text-gray-400',
                         'hover:text-gray-900 dark:hover:text-gray-100',
-                        'hover:bg-white/60 dark:hover:bg-gray-700/40',
+                        'hover:bg-white dark:hover:bg-slate-700',
                       ],
                       isActive && [
                         'text-blue-600 dark:text-blue-400',
-                        'bg-white dark:bg-gray-700/60',
+                        'bg-white dark:bg-slate-700',
                         'shadow-sm',
                       ],
                       tab.disabled && 'opacity-40 cursor-not-allowed hover:bg-transparent',
@@ -191,12 +191,12 @@ export const TabbedContainer: React.FC<TabbedContainerProps> = ({
 
     return (
       <div className={cn(
-        'bg-white dark:bg-gray-900 rounded-lg border border-gray-200/60 dark:border-gray-800',
+        'bg-white dark:bg-slate-900 rounded-lg border border-gray-200 dark:border-slate-700',
         className,
       )}>
         <div className={cn(
-          'border-b border-gray-200/60 dark:border-gray-800',
-          'bg-gray-50/30 dark:bg-gray-800/20 px-2 py-2',
+          'border-b border-gray-200 dark:border-slate-700',
+          'bg-gray-50 dark:bg-slate-800 px-2 py-2',
           tabsClassName,
         )}>
           <nav className="flex gap-1 overflow-x-auto scrollbar-hide" role="tablist">
@@ -214,15 +214,15 @@ export const TabbedContainer: React.FC<TabbedContainerProps> = ({
                   className={cn(
                     'relative flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg whitespace-nowrap',
                     'transition-all duration-200 ease-out',
-                    'focus:outline-none focus:ring-2 focus:ring-blue-500/20',
+                    'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1',
                     !isActive && [
                       'text-gray-600 dark:text-gray-400',
                       'hover:text-gray-900 dark:hover:text-gray-100',
-                      'hover:bg-white/60 dark:hover:bg-gray-700/40',
+                      'hover:bg-white dark:hover:bg-slate-700',
                     ],
                     isActive && [
                       'text-blue-600 dark:text-blue-400',
-                      'bg-white dark:bg-gray-700/60',
+                      'bg-white dark:bg-slate-700',
                       'shadow-sm',
                     ],
                     tab.disabled && 'opacity-40 cursor-not-allowed hover:bg-transparent',
@@ -245,7 +245,7 @@ export const TabbedContainer: React.FC<TabbedContainerProps> = ({
           </nav>
         </div>
 
-        <div className={cn('p-6', contentClassName)}>
+        <div className={cn('p-4', contentClassName)}>
           {loading ? (
             <div className="space-y-3">
               <LoadingSkeleton className="h-4 w-3/4"/>
@@ -275,7 +275,7 @@ export const TabbedContainer: React.FC<TabbedContainerProps> = ({
             <div
               key={tab.id}
               className={cn(
-                'bg-white dark:bg-gray-900 rounded-lg border border-gray-200/60 dark:border-gray-800',
+                'bg-white dark:bg-slate-900 rounded-lg border border-gray-200 dark:border-slate-700',
                 'overflow-hidden transition-all duration-200',
                 isActive && 'shadow-sm',
               )}
@@ -286,8 +286,8 @@ export const TabbedContainer: React.FC<TabbedContainerProps> = ({
                 className={cn(
                   'w-full flex items-center justify-between px-4 py-3 text-left',
                   'transition-colors duration-200',
-                  'hover:bg-gray-50/50 dark:hover:bg-gray-800/30',
-                  'focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:ring-inset',
+                  'hover:bg-gray-50 dark:hover:bg-slate-800',
+                  'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset',
                   tab.disabled && 'opacity-40 cursor-not-allowed hover:bg-transparent',
                 )}
               >
@@ -300,21 +300,21 @@ export const TabbedContainer: React.FC<TabbedContainerProps> = ({
                   )}
                   <span className={cn(
                     'font-medium text-sm',
-                    isActive ? 'text-gray-900 dark:text-white' : 'text-gray-700 dark:text-gray-300',
+                    isActive ? 'text-gray-900 dark:text-gray-100' : 'text-gray-700 dark:text-gray-300',
                   )}>
                     {tab.label}
                   </span>
                 </div>
 
                 <ChevronRight className={cn(
-                  'w-4 h-4 text-gray-400 transition-transform duration-200',
+                  'w-4 h-4 text-gray-400 dark:text-gray-500 transition-transform duration-200',
                   isActive && 'rotate-90',
                 )}/>
               </button>
 
               {isActive && (
                 <div className={cn(
-                  'border-t border-gray-200/60 dark:border-gray-800 px-4 py-4',
+                  'border-t border-gray-200 dark:border-slate-700 px-4 py-4',
                   contentClassName,
                 )}>
                   {loading ? (
