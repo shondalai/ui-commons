@@ -1270,7 +1270,7 @@ export const RichTextEditor = forwardRef<RichTextEditorRef, RichTextEditorProps>
   autoLoadEditContent = true,
   enabledButtons,
 }, ref) => {
-  const [characterCount, setCharacterCount] = React.useState(0)
+  const [_characterCount, setCharacterCount] = React.useState(0)
   const clearContentRef = useRef<(() => void) | null>(null)
   const loadContentRef = useRef<((html: string) => void) | null>(null)
   const editorRef = useRef<any>(null)
@@ -1336,8 +1336,6 @@ export const RichTextEditor = forwardRef<RichTextEditorRef, RichTextEditorProps>
     ],
   }
 
-  const isCharacterLimitExceeded = maxCharacters ? characterCount > maxCharacters : false
-
   const ErrorBoundary = ({ children }: { children: React.ReactNode }) => {
     return <>{children}</>
   }
@@ -1348,16 +1346,16 @@ export const RichTextEditor = forwardRef<RichTextEditorRef, RichTextEditorProps>
         {showToolbar && <ToolbarPlugin disabled={disabled} enabledButtons={enabledButtons}/>}
 
         <div
-          className="relative overflow-hidden"
-          style={{ minHeight: '140px', maxHeight: '500px', display: 'flex', flexDirection: 'column' }}
+          className="relative overflow-y-auto"
+          style={{ minHeight: '200px', maxHeight: '500px' }}
         >
           <RichTextPlugin
             contentEditable={
               <ContentEditable
                 ref={editorRef}
-                className={`rte-content-editable outline-none px-3 py-2.5 flex-1 overflow-y-auto ${
+                className={`rte-content-editable outline-none px-3 py-2.5 min-h-full ${
                   disabled ? 'bg-gray-50 dark:bg-slate-900 cursor-not-allowed' : '!bg-white dark:!bg-slate-950'
-                } ${isCharacterLimitExceeded ? 'border-red-300 dark:border-red-700' : ''} !text-gray-900 dark:!text-white text-sm leading-relaxed`}
+                } !text-gray-900 dark:!text-white text-sm leading-relaxed`}
                 style={{
                   direction: 'ltr',
                   textAlign: 'left'
