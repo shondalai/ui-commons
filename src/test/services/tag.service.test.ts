@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { TagService } from '../../services/tag.service'
+import {beforeEach, describe, expect, it, vi} from 'vitest'
+import {TagService} from '../../services/tag.service'
 
 describe('TagService', () => {
   beforeEach(() => {
@@ -77,8 +77,12 @@ describe('TagService', () => {
       await TagService.getTags('/index.php?option=com_test')
 
       expect(global.fetch).toHaveBeenCalledWith(
-        expect.stringContaining('test-token-123=1'),
-        expect.any(Object),
+        expect.any(String),
+        expect.objectContaining({
+          headers: expect.objectContaining({
+            'X-CSRF-Token': 'test-token-123',
+          }),
+        }),
       )
     })
 
@@ -128,10 +132,11 @@ describe('TagService', () => {
         expect.any(String),
         expect.objectContaining({
           method: 'GET',
-          headers: {
+          headers: expect.objectContaining({
             'Content-Type': 'application/json',
             'X-Requested-With': 'XMLHttpRequest',
-          },
+            'X-CSRF-Token': 'test-token-123',
+          }),
         }),
       )
     })
@@ -174,8 +179,12 @@ describe('TagService', () => {
       })
 
       expect(global.fetch).toHaveBeenCalledWith(
-        expect.stringContaining('test-token-123=1'),
-        expect.any(Object),
+        expect.any(String),
+        expect.objectContaining({
+          headers: expect.objectContaining({
+            'X-CSRF-Token': 'test-token-123',
+          }),
+        }),
       )
     })
 
@@ -198,10 +207,11 @@ describe('TagService', () => {
         expect.any(String),
         expect.objectContaining({
           method: 'POST',
-          headers: {
+          headers: expect.objectContaining({
             'Content-Type': 'application/json',
             'X-Requested-With': 'XMLHttpRequest',
-          },
+            'X-CSRF-Token': 'test-token-123',
+          }),
         }),
       )
     })
