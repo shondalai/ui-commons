@@ -1,8 +1,8 @@
 import React from 'react'
-import { cn } from '@/lib/utils'
-import { transformCompleteConfig } from '@/utils/config-transformer'
-import { renderBlock } from '@/components/layout/block-registry'
-import { LayoutArea, LayoutBlock } from '@/types/layout.types.ts'
+import {cn} from '@/lib/utils'
+import {transformCompleteConfig} from '@/utils/config-transformer'
+import {renderBlock} from '@/components/layout/block-registry'
+import {LayoutArea, LayoutBlock} from '@/types/layout.types.ts'
 
 interface DynamicLayoutManagerProps {
   areas: LayoutArea[]
@@ -57,7 +57,7 @@ const DynamicLayoutManager: React.FC<DynamicLayoutManagerProps> = ({
     return (
       <div className={cn('min-h-screen bg-background', className)}>
         <div className={cn(
-          'mx-auto px-4 sm:px-6 lg:px-8 py-8',
+          'mx-auto py-4',
           !fullWidth && 'max-w-7xl'
         )}>
           <div className="text-center text-muted-foreground">
@@ -119,7 +119,7 @@ const DynamicLayoutManager: React.FC<DynamicLayoutManagerProps> = ({
 
       {/* Render regular blocks in container */}
       <div className={cn(
-        'mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6',
+        'mx-auto py-4 space-y-6',
         !fullWidth && 'max-w-7xl'
       )}>
         {Object.keys(regularRows).sort((a, b) => Number(a) - Number(b)).map(rowKey => {
