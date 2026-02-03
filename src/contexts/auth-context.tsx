@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react'
+import React, {createContext, useContext, useEffect, useState} from 'react'
 
 export interface User {
   id: number
@@ -18,6 +18,7 @@ interface AuthContextType {
   login: (credentials: { username: string; password: string }) => Promise<void>
   logout: () => Promise<void>
   refreshUser: () => Promise<void>
+  updateUser: (user: User | null) => void
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -27,6 +28,7 @@ const AuthContext = createContext<AuthContextType>({
   login: async () => {},
   logout: async () => {},
   refreshUser: async () => {},
+  updateUser: () => {},
 })
 
 export const useAuth = () => {
@@ -106,6 +108,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
 
     initAuth()
   }, [userDataKey, componentNamespace])
+
+  const updateUser = (userData: User | null) => {
+    setUser(userData)
+  }
 
   const refreshUser = async () => {
     try {
@@ -210,6 +216,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
         login,
         logout,
         refreshUser,
+        updateUser,
       }}
     >
       {children}
