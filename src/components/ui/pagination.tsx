@@ -216,7 +216,7 @@ export const Pagination: React.FC<PaginationProps> = ({
   return (
     <div className={`w-full ${className}`}>
       {/* Row 1: Result count and page size selector */}
-      <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
+      <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-4 mb-4">
         {/* Left: Result count */}
         {total > 0 && (
           <div className="text-sm text-neutral-600 dark:text-neutral-400">
@@ -247,13 +247,13 @@ export const Pagination: React.FC<PaginationProps> = ({
       {/* Row 2: Pagination controls (centered) */}
       {totalPages > 1 && (
         <div className="flex items-center justify-center gap-1">
-          {/* First */}
+          {/* First - sr-only on mobile (<sm), visible sm+ */}
           <Button
             variant="outline"
             size="sm"
             onClick={() => onPageChange(1)}
             disabled={!hasPrev}
-            className={`h-9 max-sm:sr-only ${useIcons ? 'w-9 px-3' : 'px-3'}`}
+            className={`h-9 max-sm:sr-only ${useIcons ? 'w-9 p-0' : 'px-3'}`}
             aria-label="First page"
           >
             {useIcons ? (
@@ -276,7 +276,7 @@ export const Pagination: React.FC<PaginationProps> = ({
             {!useIcons && <span className="ml-1.5 text-sm font-medium max-sm:sr-only">{finalLabels.prev}</span>}
           </Button>
 
-          {/* Page numbers - Desktop only */}
+          {/* Page numbers - sr-only on mobile (<md), flex on md+ */}
           <div className="max-md:sr-only md:flex items-center gap-1">
             {pageNumbers.map((pageNum, index) =>
               pageNum === '...' ? (
@@ -303,8 +303,8 @@ export const Pagination: React.FC<PaginationProps> = ({
             )}
           </div>
 
-          {/* Mobile indicator */}
-          <div className="md:sr-only flex items-center justify-center h-9 px-3 bg-neutral-100 dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700">
+          {/* Mobile page indicator - visible on mobile (<md), hidden md+ */}
+          <div className="flex md:hidden items-center justify-center h-9 px-3 bg-neutral-100 dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700">
             <span className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
               {page} / {totalPages}
             </span>
@@ -323,13 +323,13 @@ export const Pagination: React.FC<PaginationProps> = ({
             <ChevronRight className="h-4 w-4" />
           </Button>
 
-          {/* Last */}
+          {/* Last - sr-only on mobile (<sm), visible sm+ */}
           <Button
             variant="outline"
             size="sm"
             onClick={() => onPageChange(totalPages)}
             disabled={!hasNext}
-            className={`h-9 max-sm:sr-only ${useIcons ? 'w-9 px-3' : 'px-3'}`}
+            className={`h-9 max-sm:sr-only ${useIcons ? 'w-9 p-0' : 'px-3'}`}
             aria-label="Last page"
           >
             {useIcons ? (

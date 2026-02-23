@@ -159,8 +159,11 @@ const AreaRenderer: React.FC<AreaRendererProps> = React.memo(({
   componentProps,
 }) => {
   // Apply responsive configuration if available
+  // Mobile-first: base is always col-span-12 (full width on mobile).
+  // The database-configured grid_columns is applied at lg+ unless
+  // the area has an explicit responsive_config.lg override.
   const getResponsiveClasses = () => {
-    let classes = getGridSpanClass(area.grid_columns)
+    let classes = 'col-span-12'
 
     if (area.responsive_config) {
       const responsive = area.responsive_config
@@ -172,10 +175,16 @@ const AreaRenderer: React.FC<AreaRendererProps> = React.memo(({
       }
       if (responsive.lg) {
         classes += ` lg:${getGridSpanClass(responsive.lg)}`
+      } else {
+        // Fall back to configured grid_columns at large breakpoint
+        classes += ` lg:${getGridSpanClass(area.grid_columns)}`
       }
       if (responsive.xl) {
         classes += ` xl:${getGridSpanClass(responsive.xl)}`
       }
+    } else {
+      // No responsive config at all: stack on mobile, apply columns at lg+
+      classes += ` lg:${getGridSpanClass(area.grid_columns)}`
     }
 
     return classes
@@ -283,18 +292,33 @@ const BlockRenderer: React.FC<BlockRendererProps> = React.memo(({
   const isStickyOrFullWidth = blockConfig.stickyHeader === true || blockConfig.fullWidth === true
 
   // Apply block-level grid configuration and styling
+  // Mobile-first: base is col-span-12 unless responsive_config.mobile_span overrides it.
+  // The database grid_column_span is applied at lg+ unless desktop_span overrides it.
   const getBlockClasses = () => {
     let classes = ''
 
-    // Only apply grid column span classes if the block is in a grid container
-    if (isInGrid && block.grid_column_span) {
-      classes += getGridSpanClass(block.grid_column_span)
-    } else if (!isInGrid) {
+    if (isInGrid) {
+      // Base (mobile): use explicit mobile_span if set, otherwise full-width
+      if (block.responsive_config?.mobile_span) {
+        classes += getGridSpanClass(block.responsive_config.mobile_span)
+      } else {
+        classes += 'col-span-12'
+      }
+
+      // Tablet breakpoint
+      if (block.responsive_config?.tablet_span) {
+        classes += ` md:${getGridSpanClass(block.responsive_config.tablet_span)}`
+      }
+
+      // Desktop breakpoint: explicit override or fall back to configured column span
+      if (block.responsive_config?.desktop_span) {
+        classes += ` lg:${getGridSpanClass(block.responsive_config.desktop_span)}`
+      } else if (block.grid_column_span) {
+        classes += ` lg:${getGridSpanClass(block.grid_column_span)}`
+      }
+    } else {
       // When not in a grid, use full width
       classes += 'w-full'
-    } else if (isInGrid && !block.grid_column_span) {
-      // In a grid but no span specified, default to full width
-      classes += 'col-span-12'
     }
 
     // Apply CSS class from block config
@@ -302,32 +326,13 @@ const BlockRenderer: React.FC<BlockRendererProps> = React.memo(({
       classes += ` ${blockConfig.cssClass}`
     }
 
-    // Apply responsive configuration for the block
+    // Apply visibility responsive configuration
     if (block.responsive_config) {
       const responsive = block.responsive_config
-      if (responsive.hidden_sm) {
-        classes += ' sm:hidden'
-      }
-      if (responsive.hidden_md) {
-        classes += ' md:hidden'
-      }
-      if (responsive.hidden_lg) {
-        classes += ' lg:hidden'
-      }
-      if (responsive.hidden_xl) {
-        classes += ' xl:hidden'
-      }
-
-      // Apply responsive grid spans using static class mapping
-      if (responsive.mobile_span) {
-        classes += ` ${getGridSpanClass(responsive.mobile_span)}`
-      }
-      if (responsive.tablet_span) {
-        classes += ` md:${getGridSpanClass(responsive.tablet_span)}`
-      }
-      if (responsive.desktop_span) {
-        classes += ` lg:${getGridSpanClass(responsive.desktop_span)}`
-      }
+      if (responsive.hidden_sm) classes += ' sm:hidden'
+      if (responsive.hidden_md) classes += ' md:hidden'
+      if (responsive.hidden_lg) classes += ' lg:hidden'
+      if (responsive.hidden_xl) classes += ' xl:hidden'
     }
 
     return classes

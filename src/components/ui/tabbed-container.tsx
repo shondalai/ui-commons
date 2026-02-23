@@ -109,20 +109,22 @@ export const TabbedContainer: React.FC<TabbedContainerProps> = ({
     if (isVertical) {
       return (
         <div className={cn(
-          'flex gap-6',
-          isVerticalRight ? 'flex-row-reverse' : 'flex-row',
+          'flex flex-col lg:gap-6',
+          isVerticalRight ? 'lg:flex-row-reverse' : 'lg:flex-row',
           'bg-white dark:bg-slate-900 rounded-lg border border-gray-200 dark:border-slate-700',
           className,
         )}>
-          {/* Vertical Tab Navigation */}
+          {/* Tab Navigation - horizontal scroll on mobile, vertical sidebar on md+ */}
           <div className={cn(
-            'flex-shrink-0 w-48 lg:w-56',
+            'flex-shrink-0',
+            'lg:w-48 xl:w-56',
             'border-gray-200 dark:border-slate-700',
-            isVerticalRight ? 'border-l' : 'border-r',
+            'border-b lg:border-b-0',
+            isVerticalRight ? 'lg:border-l' : 'lg:border-r',
             'bg-gray-50 dark:bg-slate-800',
             tabsClassName,
           )}>
-            <nav className="flex flex-col p-2 space-y-1" role="tablist">
+            <nav className="flex lg:flex-col p-2 lg:space-y-1 gap-1 lg:gap-0 overflow-x-auto lg:overflow-x-visible" role="tablist">
               {tabs.map((tab) => {
                 const isActive = activeTabs.has(tab.id)
                 const Icon = tab.icon
@@ -135,7 +137,7 @@ export const TabbedContainer: React.FC<TabbedContainerProps> = ({
                     disabled={tab.disabled}
                     onClick={() => handleTabClick(tab.id)}
                     className={cn(
-                      'group relative flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg',
+                      'group relative flex items-center gap-2 lg:gap-3 px-3 lg:px-4 py-2.5 lg:py-3 text-sm font-medium rounded-lg whitespace-nowrap lg:whitespace-normal',
                       'transition-all duration-200 ease-out',
                       'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1',
                       !isActive && [
@@ -152,7 +154,7 @@ export const TabbedContainer: React.FC<TabbedContainerProps> = ({
                     )}
                   >
                     <div className={cn(
-                      'absolute top-1/2 -translate-y-1/2 w-0.5 h-8 rounded-full transition-all duration-200',
+                      'hidden lg:block absolute top-1/2 -translate-y-1/2 w-0.5 h-8 rounded-full transition-all duration-200',
                       isVerticalRight ? 'right-0' : 'left-0',
                       isActive ? 'bg-blue-500 dark:bg-blue-400' : 'bg-transparent',
                     )}/>
@@ -170,7 +172,7 @@ export const TabbedContainer: React.FC<TabbedContainerProps> = ({
           </div>
 
           {/* Content Area */}
-          <div className={cn('flex-1 min-w-0 p-6', contentClassName)}>
+          <div className={cn('flex-1 min-w-0 p-4 lg:p-6', contentClassName)}>
             {loading ? (
               <div className="space-y-3">
                 <LoadingSkeleton className="h-4 w-3/4"/>
