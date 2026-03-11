@@ -1,9 +1,9 @@
-import React, { useCallback, useState } from 'react'
-import { Alert, AlertDescription } from './alert'
-import { Button } from './button'
-import { cn } from '../../lib/utils'
-import { type Attachment, AttachmentService } from '../../services/attachment.service'
-import { AlertCircle, File, FileText, Image, Loader2, Paperclip, Upload, X } from 'lucide-react'
+import React, {useCallback, useState} from 'react'
+import {Alert, AlertDescription} from './alert'
+import {Button} from './button'
+import {cn} from '../../lib/utils'
+import {type Attachment, AttachmentService} from '../../services/attachment.service'
+import {AlertCircle, File, FileText, Image, Loader2, Paperclip, Upload, X} from 'lucide-react'
 
 interface AttachmentManagerProps {
   attachments: Attachment[]
@@ -11,7 +11,7 @@ interface AttachmentManagerProps {
   config?: {
     maxFiles?: number
     maxFileSize?: number
-    allowedTypes?: string[]
+    allowedTypes?: string[] | string
     acceptedFileTypes?: string
   }
   uploadUrl: string
@@ -30,6 +30,25 @@ interface AttachmentManagerProps {
     pending?: string
     deleteAttachment?: string
   }
+}
+
+const DEFAULT_ALLOWED_TYPES = ['jpg', 'jpeg', 'png', 'gif', 'pdf', 'doc', 'docx', 'txt']
+
+const normalizeAllowedTypes = (value?: string[] | string): string[] => {
+  if (Array.isArray(value)) {
+    return value
+      .map(type => type.trim().replace(/^\./, '').toLowerCase())
+      .filter(Boolean)
+  }
+
+  if (typeof value === 'string') {
+    return value
+      .split(',')
+      .map(type => type.trim().replace(/^\./, '').toLowerCase())
+      .filter(Boolean)
+  }
+
+  return []
 }
 
 export const AttachmentManager: React.FC<AttachmentManagerProps> = ({
@@ -52,9 +71,14 @@ export const AttachmentManager: React.FC<AttachmentManagerProps> = ({
   const {
     maxFiles = 5,
     maxFileSize = 5 * 1024 * 1024,
-    allowedTypes = ['jpg', 'jpeg', 'png', 'gif', 'pdf', 'doc', 'docx', 'txt'],
-    acceptedFileTypes = allowedTypes.map(ext => `.${ext}`).join(','),
+    allowedTypes: rawAllowedTypes,
+    acceptedFileTypes: rawAcceptedFileTypes,
   } = config
+  const allowedTypes = normalizeAllowedTypes(rawAllowedTypes)
+  const resolvedAllowedTypes = allowedTypes.length > 0 ? allowedTypes : DEFAULT_ALLOWED_TYPES
+  const acceptedFileTypes = rawAcceptedFileTypes && rawAcceptedFileTypes.length > 0
+    ? rawAcceptedFileTypes
+    : resolvedAllowedTypes.map(ext => `.${ext}`).join(',')
 
   const defaultLabels = {
     uploading: 'Uploading...',
@@ -90,7 +114,7 @@ export const AttachmentManager: React.FC<AttachmentManagerProps> = ({
 
         const validation = AttachmentService.validateFile(file, {
           maxSize: maxFileSize,
-          allowedTypes,
+          allowedTypes: resolvedAllowedTypes,
           maxFiles,
           currentFiles: attachments.length + newAttachments.length,
         })
@@ -133,7 +157,7 @@ export const AttachmentManager: React.FC<AttachmentManagerProps> = ({
     finally {
       setIsUploading(false)
     }
-  }, [attachments, onAttachmentsChange, disabled, maxFiles, maxFileSize, allowedTypes, type, uploadUrl])
+  }, [attachments, onAttachmentsChange, disabled, maxFiles, maxFileSize, resolvedAllowedTypes, type, uploadUrl])
 
   const handleRemoveAttachment = useCallback(async (index: number) => {
     if (disabled) {
@@ -246,7 +270,7 @@ export const AttachmentManager: React.FC<AttachmentManagerProps> = ({
                 {isUploading ? finalLabels.uploading : finalLabels.dropFilesHere}
               </p>
               <p className="text-xs text-neutral-500 dark:text-neutral-400">
-                {allowedTypes.slice(0, 3).join(', ')}{allowedTypes.length > 3 && '...'} • Max {AttachmentService.formatFileSize(maxFileSize)} • {maxFiles} files max
+                {resolvedAllowedTypes.slice(0, 3).join(', ')}{resolvedAllowedTypes.length > 3 && '...'} • Max {AttachmentService.formatFileSize(maxFileSize)} • {maxFiles} files max
               </p>
             </div>
           </div>
