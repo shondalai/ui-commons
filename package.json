@@ -156,7 +156,7 @@
     "eslint": "^9.39.1",
     "eslint-plugin-react-hooks": "^7.0.1",
     "glob": "^11.0.3",
-    "happy-dom": "^20.0.0",
+    "happy-dom": "^20.8.9",
     "jsdom": "^27.0.0",
     "lexical": "^0.38.2",
     "postcss": "^8.5.6",
