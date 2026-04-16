@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
-import { Eye, EyeOff, Loader2, LogIn, X } from 'lucide-react'
-import { Button } from './button'
+import React, {useState} from 'react'
+import {Eye, EyeOff, Loader2, LogIn, X} from 'lucide-react'
+import {Button} from './button'
 
 interface LoginModalProps {
   isOpen: boolean
@@ -41,8 +41,8 @@ export const LoginModal: React.FC<LoginModalProps> = ({
   const defaultLabels = {
     title: 'Welcome Back',
     subtitle: 'Sign in to your account',
-    username: 'Username',
-    usernamePlaceholder: 'Enter your username',
+    username: 'Username or Email',
+    usernamePlaceholder: 'Enter your username or email',
     password: 'Password',
     passwordPlaceholder: 'Enter your password',
     rememberMe: 'Remember me',

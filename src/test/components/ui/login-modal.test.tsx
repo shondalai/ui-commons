@@ -1,7 +1,7 @@
-import { describe, it, expect, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import {describe, expect, it, vi} from 'vitest'
+import {render, screen} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { LoginModal } from '../../../components/ui/login-modal'
+import {LoginModal} from '../../../components/ui/login-modal'
 
 describe('LoginModal', () => {
   it('should render when open', () => {
@@ -16,7 +16,7 @@ describe('LoginModal', () => {
 
   it('should display username and password fields', () => {
     render(<LoginModal isOpen={true} onClose={() => {}}/>)
-    expect(screen.getByPlaceholderText(/enter your username/i)).toBeInTheDocument()
+    expect(screen.getByPlaceholderText(/enter your username or email/i)).toBeInTheDocument()
     expect(screen.getByPlaceholderText(/enter your password/i)).toBeInTheDocument()
   })
 
@@ -24,7 +24,7 @@ describe('LoginModal', () => {
     const user = userEvent.setup()
     render(<LoginModal isOpen={true} onClose={() => {}}/>)
 
-    const usernameInput = screen.getByPlaceholderText(/enter your username/i)
+    const usernameInput = screen.getByPlaceholderText(/enter your username or email/i)
     await user.type(usernameInput, 'testuser')
 
     expect(usernameInput).toHaveValue('testuser')
