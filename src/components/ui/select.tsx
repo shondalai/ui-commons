@@ -67,9 +67,25 @@ const SelectContent = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>
 >(({ className, children, position = 'popper', ...props }, ref) => {
-  // Get the portal container - use #easyforms-app or .app-container if it exists, otherwise document.body
+  // Portal target lookup. Consumer apps scope Tailwind utilities under
+  // `:is(#ec-store-root, #easycommerce-app, .ec-portal-host)`; the dropdown
+  // needs to land inside one of those so `bg-white`, `max-h-96`,
+  // `overflow-hidden`, `rounded-md`, etc. apply.
+  //
+  // We target `#ec-overlay-host` by id first — EasyCommerce creates a
+  // dedicated overlay element with that id (and `.ec-portal-host` class
+  // for Tailwind scoping). Looking it up by id avoids colliding with
+  // react-hot-toast's `<Toaster containerClassName="ec-portal-host">`,
+  // whose container ships with `pointer-events: none` inline so toasts
+  // don't block clicks. Mounting a Select inside the toaster's container
+  // makes the entire dropdown click-through, which is exactly what we
+  // don't want.
   const portalContainer = typeof document !== 'undefined'
-    ? document.querySelector('.app-container') || document.body
+    ? document.getElementById('ec-overlay-host')
+      || document.querySelector('.ec-portal-host')
+      || document.querySelector('#easyforms-app')
+      || document.querySelector('.app-container')
+      || document.body
     : undefined;
 
   return (

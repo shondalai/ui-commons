@@ -30,9 +30,18 @@ const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
 >(({ className, children, ...props }, ref) => {
-  // Get the portal container - use #easyforms-app or .app-container if it exists, otherwise document.body
+  // Portal target lookup. `#ec-overlay-host` first — EasyCommerce ships a
+  // dedicated overlay element with that id. Skipping the legacy
+  // `.ec-portal-host` class lookup avoids colliding with react-hot-toast's
+  // `<Toaster containerClassName="ec-portal-host">` element, which has
+  // `pointer-events: none` inline and would make a dialog mounted inside
+  // it click-through.
   const portalContainer = typeof document !== 'undefined'
-    ? document.querySelector('#easyforms-app') || document.querySelector('.app-container') || document.body
+    ? document.getElementById('ec-overlay-host')
+      || document.querySelector('.ec-portal-host')
+      || document.querySelector('#easyforms-app')
+      || document.querySelector('.app-container')
+      || document.body
     : undefined;
 
   return (
