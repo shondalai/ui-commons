@@ -28,7 +28,14 @@ export const useToast = () => {
   return context
 }
 
-export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+// `containerClassName` lets host apps tag the toast viewport with their
+// Tailwind scope marker (e.g. EasyCommerce's `ec-portal-host`). The viewport
+// renders as a sibling of the app tree, so in apps whose utilities are scoped
+// to the mount element it would otherwise receive no styling at all. The
+// marker goes on a WRAPPER around the positioned container: scoped builds
+// emit descendant selectors (`:is(scope) .fixed`), which never match
+// utilities sitting on the scope element itself.
+export const ToastProvider: React.FC<{ children: React.ReactNode; containerClassName?: string }> = ({ children, containerClassName }) => {
   const [toasts, setToasts] = useState<Toast[]>([])
 
   const removeToast = useCallback((id: string) => {
@@ -117,7 +124,8 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       {children}
 
       {/* Toast Container - Premium minimalist design */}
-      <div className="fixed top-4 right-4 z-[100000] flex flex-col gap-2 pointer-events-none">
+      <div className={containerClassName}>
+        <div className="fixed top-4 right-4 z-[100000] flex flex-col gap-2 pointer-events-none">
         {toasts.map((toast) => {
           const styles = getToastStyles(toast.type)
 
@@ -153,6 +161,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             </div>
           )
         })}
+        </div>
       </div>
     </ToastContext.Provider>
   )
