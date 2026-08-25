@@ -2,6 +2,7 @@ import * as React from 'react'
 import * as SelectPrimitive from '@radix-ui/react-select'
 import { Check, ChevronDown, ChevronUp } from 'lucide-react'
 import { cn } from '../../lib/utils'
+import { useOverlayContainer } from '../../contexts/overlay-context'
 
 const Select = SelectPrimitive.Root
 
@@ -67,9 +68,11 @@ const SelectContent = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>
 >(({ className, children, position = 'popper', ...props }, ref) => {
+  const scopedContainer = useOverlayContainer();
+
   // Portal target lookup. Consumer apps scope Tailwind utilities under
   // `:is(#ec-store-root, #easycommerce-app, .ec-portal-host)`; the dropdown
-  // needs to land inside one of those so `bg-white`, `max-h-96`,
+  // needs to land inside one of those so `bg-popover`, `max-h-96`,
   // `overflow-hidden`, `rounded-md`, etc. apply.
   //
   // We target `#ec-overlay-host` by id first — EasyCommerce creates a
@@ -81,7 +84,8 @@ const SelectContent = React.forwardRef<
   // makes the entire dropdown click-through, which is exactly what we
   // don't want.
   const portalContainer = typeof document !== 'undefined'
-    ? document.getElementById('ec-overlay-host')
+    ? scopedContainer
+      || document.getElementById('ec-overlay-host')
       || document.querySelector('.ec-portal-host')
       || document.querySelector('#easyforms-app')
       || document.querySelector('.app-container')
@@ -93,7 +97,7 @@ const SelectContent = React.forwardRef<
       <SelectPrimitive.Content
         ref={ref}
         className={cn(
-          'z-[99999] max-h-96 min-w-[8rem] overflow-hidden rounded-md border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 text-neutral-900 dark:text-neutral-50 shadow-lg',
+          'z-[99999] max-h-96 min-w-[8rem] overflow-hidden rounded-md border border-border bg-popover text-popover-foreground shadow-lg',
           'data-[state=open]:animate-in data-[state=closed]:animate-out',
           'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
           'data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',

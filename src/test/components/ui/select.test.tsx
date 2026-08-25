@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { OverlayProvider } from '../../../contexts/overlay-context'
 import {
   Select,
   SelectContent,
@@ -84,6 +85,30 @@ describe('Select', () => {
       </Select>,
     )
     expect(screen.getByRole('combobox')).toBeDisabled()
+  })
+
+  it('should portal content into the consumer-scoped overlay host', async () => {
+    const user = userEvent.setup()
+
+    render(
+      <>
+        <div id="test-overlay-host" data-testid="overlay-host"/>
+        <OverlayProvider containerId="test-overlay-host">
+          <Select>
+            <SelectTrigger>
+              <SelectValue placeholder="Scoped select"/>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="scoped">Scoped option</SelectItem>
+            </SelectContent>
+          </Select>
+        </OverlayProvider>
+      </>,
+    )
+
+    await user.click(screen.getByRole('combobox'))
+
+    expect(screen.getByTestId('overlay-host')).toContainElement(screen.getByText('Scoped option'))
   })
 })
 

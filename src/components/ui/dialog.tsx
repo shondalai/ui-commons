@@ -2,6 +2,7 @@ import * as React from "react"
 import * as DialogPrimitive from "@radix-ui/react-dialog"
 import { X } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useOverlayContainer } from "@/contexts/overlay-context"
 
 const Dialog = DialogPrimitive.Root
 
@@ -30,6 +31,8 @@ const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
 >(({ className, children, ...props }, ref) => {
+  const scopedContainer = useOverlayContainer();
+
   // Portal target lookup. `#ec-overlay-host` first — EasyCommerce ships a
   // dedicated overlay element with that id. Skipping the legacy
   // `.ec-portal-host` class lookup avoids colliding with react-hot-toast's
@@ -37,7 +40,8 @@ const DialogContent = React.forwardRef<
   // `pointer-events: none` inline and would make a dialog mounted inside
   // it click-through.
   const portalContainer = typeof document !== 'undefined'
-    ? document.getElementById('ec-overlay-host')
+    ? scopedContainer
+      || document.getElementById('ec-overlay-host')
       || document.querySelector('.ec-portal-host')
       || document.querySelector('#easyforms-app')
       || document.querySelector('.app-container')

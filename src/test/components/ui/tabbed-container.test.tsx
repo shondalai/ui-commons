@@ -59,8 +59,8 @@ describe('TabbedContainer', () => {
     const { container } = render(
       <TabbedContainer tabs={mockTabs} orientation="vertical"/>,
     )
-    // Vertical orientation renders with flex-row (horizontal nav layout)
-    expect(container.querySelector('.flex-row')).toBeInTheDocument()
+    // Vertical orientation becomes a horizontal nav/content layout at lg.
+    expect(container.firstChild).toHaveClass('lg:flex-row')
   })
 
   it('should apply custom className', () => {
@@ -84,5 +84,12 @@ describe('TabbedContainer', () => {
   it('should show loading state', () => {
     render(<TabbedContainer tabs={mockTabs} loading={true}/>)
     expect(screen.getByText('Tab 1')).toBeInTheDocument()
+  })
+
+  it('should use semantic theme surfaces instead of Bootstrap-colliding white utilities', () => {
+    const { container } = render(<TabbedContainer tabs={mockTabs}/>)
+
+    expect(container.firstChild).toHaveClass('bg-card', 'border-border')
+    expect(container.firstChild).not.toHaveClass('bg-white')
   })
 })

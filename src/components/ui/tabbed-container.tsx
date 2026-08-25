@@ -111,17 +111,17 @@ export const TabbedContainer: React.FC<TabbedContainerProps> = ({
         <div className={cn(
           'flex flex-col lg:gap-6',
           isVerticalRight ? 'lg:flex-row-reverse' : 'lg:flex-row',
-          'bg-white dark:bg-slate-900 rounded-lg border border-gray-200 dark:border-slate-700',
+          'bg-card text-card-foreground rounded-lg border border-border',
           className,
         )}>
           {/* Tab Navigation - horizontal scroll on mobile, vertical sidebar on md+ */}
           <div className={cn(
             'flex-shrink-0',
             'lg:w-48 xl:w-56',
-            'border-gray-200 dark:border-slate-700',
+            'border-border',
             'border-b lg:border-b-0',
             isVerticalRight ? 'lg:border-l' : 'lg:border-r',
-            'bg-gray-50 dark:bg-slate-800',
+            'bg-muted',
             tabsClassName,
           )}>
             <nav className="flex lg:flex-col p-2 lg:space-y-1 gap-1 lg:gap-0 overflow-x-auto lg:overflow-x-visible" role="tablist">
@@ -139,15 +139,15 @@ export const TabbedContainer: React.FC<TabbedContainerProps> = ({
                     className={cn(
                       'group relative flex items-center gap-2 lg:gap-3 px-3 lg:px-4 py-2.5 lg:py-3 text-sm font-medium rounded-lg whitespace-nowrap lg:whitespace-normal',
                       'transition-all duration-200 ease-out',
-                      'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1',
+                      'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1 focus:ring-offset-background',
                       !isActive && [
-                        'text-gray-600 dark:text-gray-400',
-                        'hover:text-gray-900 dark:hover:text-gray-100',
-                        'hover:bg-white dark:hover:bg-slate-700',
+                        'text-muted-foreground',
+                        'hover:text-foreground',
+                        'hover:bg-background/70',
                       ],
                       isActive && [
-                        'text-blue-600 dark:text-blue-400',
-                        'bg-white dark:bg-slate-700',
+                        'text-primary',
+                        'bg-background',
                         'shadow-sm',
                       ],
                       tab.disabled && 'opacity-40 cursor-not-allowed hover:bg-transparent',
@@ -156,12 +156,12 @@ export const TabbedContainer: React.FC<TabbedContainerProps> = ({
                     <div className={cn(
                       'hidden lg:block absolute top-1/2 -translate-y-1/2 w-0.5 h-8 rounded-full transition-all duration-200',
                       isVerticalRight ? 'right-0' : 'left-0',
-                      isActive ? 'bg-blue-500 dark:bg-blue-400' : 'bg-transparent',
+                      isActive ? 'bg-primary' : 'bg-transparent',
                     )}/>
                     {Icon && (
                       <Icon className={cn(
                         'w-4 h-4 flex-shrink-0 transition-colors',
-                        isActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400',
+                        isActive ? 'text-primary' : 'text-muted-foreground',
                       )}/>
                     )}
                     <span className="truncate text-left">{tab.label}</span>
@@ -182,7 +182,7 @@ export const TabbedContainer: React.FC<TabbedContainerProps> = ({
             ) : activeTab?.component ? (
               React.createElement(activeTab.component, activeTab.props || {})
             ) : (
-              <div className="flex items-center justify-center py-16 text-gray-500 dark:text-gray-400">
+              <div className="flex items-center justify-center py-16 text-muted-foreground">
                 <div className="text-center text-sm">No content available</div>
               </div>
             )}
@@ -193,12 +193,12 @@ export const TabbedContainer: React.FC<TabbedContainerProps> = ({
 
     return (
       <div className={cn(
-        'bg-white dark:bg-slate-900 rounded-lg border border-gray-200 dark:border-slate-700',
+        'bg-card text-card-foreground rounded-lg border border-border',
         className,
       )}>
         <div className={cn(
-          'border-b border-gray-200 dark:border-slate-700',
-          'bg-gray-50 dark:bg-slate-800 px-2 py-2',
+          'border-b border-border',
+          'bg-muted px-2 py-2',
           tabsClassName,
         )}>
           <nav className="flex gap-1 overflow-x-auto scrollbar-hide" role="tablist">
@@ -216,15 +216,15 @@ export const TabbedContainer: React.FC<TabbedContainerProps> = ({
                   className={cn(
                     'relative flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg whitespace-nowrap',
                     'transition-all duration-200 ease-out',
-                    'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1',
+                    'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1 focus:ring-offset-background',
                     !isActive && [
-                      'text-gray-600 dark:text-gray-400',
-                      'hover:text-gray-900 dark:hover:text-gray-100',
-                      'hover:bg-white dark:hover:bg-slate-700',
+                      'text-muted-foreground',
+                      'hover:text-foreground',
+                      'hover:bg-background/70',
                     ],
                     isActive && [
-                      'text-blue-600 dark:text-blue-400',
-                      'bg-white dark:bg-slate-700',
+                      'text-primary',
+                      'bg-background',
                       'shadow-sm',
                     ],
                     tab.disabled && 'opacity-40 cursor-not-allowed hover:bg-transparent',
@@ -232,12 +232,12 @@ export const TabbedContainer: React.FC<TabbedContainerProps> = ({
                 >
                   <div className={cn(
                     'absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-0.5 rounded-full transition-all duration-200',
-                    isActive ? 'bg-blue-500 dark:bg-blue-400' : 'bg-transparent',
+                    isActive ? 'bg-primary' : 'bg-transparent',
                   )}/>
                   {Icon && (
                     <Icon className={cn(
                       'w-4 h-4 flex-shrink-0',
-                      isActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400',
+                      isActive ? 'text-primary' : 'text-muted-foreground',
                     )}/>
                   )}
                   <span className="truncate">{tab.label}</span>
@@ -257,7 +257,7 @@ export const TabbedContainer: React.FC<TabbedContainerProps> = ({
           ) : activeTab?.component ? (
             React.createElement(activeTab.component, activeTab.props || {})
           ) : (
-            <div className="flex items-center justify-center py-16 text-gray-500 dark:text-gray-400">
+            <div className="flex items-center justify-center py-16 text-muted-foreground">
               <div className="text-center text-sm">No content available</div>
             </div>
           )}
@@ -277,7 +277,7 @@ export const TabbedContainer: React.FC<TabbedContainerProps> = ({
             <div
               key={tab.id}
               className={cn(
-                'bg-white dark:bg-slate-900 rounded-lg border border-gray-200 dark:border-slate-700',
+                'bg-card text-card-foreground rounded-lg border border-border',
                 'overflow-hidden transition-all duration-200',
                 isActive && 'shadow-sm',
               )}
@@ -288,8 +288,8 @@ export const TabbedContainer: React.FC<TabbedContainerProps> = ({
                 className={cn(
                   'w-full flex items-center justify-between px-4 py-3 text-left',
                   'transition-colors duration-200',
-                  'hover:bg-gray-50 dark:hover:bg-slate-800',
-                  'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset',
+                  'hover:bg-muted/70',
+                  'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-inset',
                   tab.disabled && 'opacity-40 cursor-not-allowed hover:bg-transparent',
                 )}
               >
@@ -297,26 +297,26 @@ export const TabbedContainer: React.FC<TabbedContainerProps> = ({
                   {Icon && (
                     <Icon className={cn(
                       'w-4 h-4 flex-shrink-0',
-                      isActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400',
+                      isActive ? 'text-primary' : 'text-muted-foreground',
                     )}/>
                   )}
                   <span className={cn(
                     'font-medium text-sm',
-                    isActive ? 'text-gray-900 dark:text-gray-100' : 'text-gray-700 dark:text-gray-300',
+                    isActive ? 'text-foreground' : 'text-muted-foreground',
                   )}>
                     {tab.label}
                   </span>
                 </div>
 
                 <ChevronRight className={cn(
-                  'w-4 h-4 text-gray-400 dark:text-gray-500 transition-transform duration-200',
+                  'w-4 h-4 text-muted-foreground transition-transform duration-200',
                   isActive && 'rotate-90',
                 )}/>
               </button>
 
               {isActive && (
                 <div className={cn(
-                  'border-t border-gray-200 dark:border-slate-700 px-4 py-4',
+                  'border-t border-border px-4 py-4',
                   contentClassName,
                 )}>
                   {loading ? (
@@ -328,7 +328,7 @@ export const TabbedContainer: React.FC<TabbedContainerProps> = ({
                   ) : tab.component ? (
                     React.createElement(tab.component, tab.props || {})
                   ) : (
-                    <div className="text-center py-8 text-gray-500 dark:text-gray-400 text-sm">
+                    <div className="text-center py-8 text-muted-foreground text-sm">
                       No content available
                     </div>
                   )}
@@ -343,7 +343,7 @@ export const TabbedContainer: React.FC<TabbedContainerProps> = ({
 
   if (tabs.length === 0) {
     return (
-      <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+      <div className="text-center py-12 text-muted-foreground">
         <div className="text-sm">No tabs configured</div>
       </div>
     )

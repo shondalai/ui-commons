@@ -3,6 +3,7 @@ import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu"
 import { Check, ChevronRight, Circle } from "lucide-react"
 
 import { cn } from "../../lib/utils"
+import { useOverlayContainer } from "../../contexts/overlay-context"
 
 const DropdownMenu = DropdownMenuPrimitive.Root
 
@@ -58,6 +59,8 @@ const DropdownMenuContent = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Content>
 >(({ className, sideOffset = 4, ...props }, ref) => {
+  const scopedContainer = useOverlayContainer();
+
   // Portal target lookup. `#ec-overlay-host` first — EasyCommerce ships a
   // dedicated overlay element with that id. Skipping the legacy
   // `.ec-portal-host` class lookup avoids colliding with react-hot-toast's
@@ -65,7 +68,8 @@ const DropdownMenuContent = React.forwardRef<
   // `pointer-events: none` inline and would make a menu mounted inside
   // it click-through.
   const portalContainer = typeof document !== 'undefined'
-    ? document.getElementById('ec-overlay-host')
+    ? scopedContainer
+      || document.getElementById('ec-overlay-host')
       || document.querySelector('.ec-portal-host')
       || document.querySelector('#easyforms-app')
       || document.querySelector('.app-container')

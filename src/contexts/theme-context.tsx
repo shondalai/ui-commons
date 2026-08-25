@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react'
+import React, { createContext, useContext, useEffect, useLayoutEffect, useState } from 'react'
 
 type Theme = 'light' | 'dark' | 'system'
 
@@ -6,6 +6,8 @@ type ThemeProviderProps = {
   children: React.ReactNode
   defaultTheme?: Theme
   storageKey?: string
+  rootSelector?: string
+  applyToDocumentRoot?: boolean
 }
 
 type ThemeProviderState = {
@@ -22,76 +24,135 @@ const initialState: ThemeProviderState = {
 
 const ThemeProviderContext = createContext<ThemeProviderState>(initialState)
 
+function isTheme (value: string | null): value is Theme {
+  return value === 'light' || value === 'dark' || value === 'system'
+}
+
+function resolveSystemTheme (): 'light' | 'dark' {
+  if (typeof document !== 'undefined') {
+    const colorScheme = document.documentElement.getAttribute('data-color-scheme')
+    if (colorScheme === 'dark' || colorScheme === 'light') return colorScheme
+
+    const bootstrapTheme = document.documentElement.getAttribute('data-bs-theme')
+    if (bootstrapTheme === 'dark' || bootstrapTheme === 'light') return bootstrapTheme
+  }
+
+  try {
+    return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  } catch {
+    return 'light'
+  }
+}
+
+function resolveTheme (theme: Theme): 'light' | 'dark' {
+  return theme === 'system' ? resolveSystemTheme() : theme
+}
+
+function findAppRoot (rootSelector?: string): HTMLElement | null {
+  if (typeof document === 'undefined') return null
+
+  if (rootSelector) {
+    try {
+      return document.querySelector<HTMLElement>(rootSelector)
+    } catch {
+      return null
+    }
+  }
+
+  return document.getElementById('easycommerce-admin-root')
+    || document.getElementById('easycommerce-store-root')
+    || document.getElementById('root')
+    || document.querySelector<HTMLElement>('[data-theme-root]')
+}
+
+function applyResolvedTheme (
+  resolvedTheme: 'light' | 'dark',
+  rootSelector: string | undefined,
+  applyToDocumentRoot: boolean,
+): void {
+  if (typeof document === 'undefined') return
+
+  const htmlRoot = document.documentElement
+  const appRoot = findAppRoot(rootSelector)
+
+  if (applyToDocumentRoot) {
+    htmlRoot.classList.remove('light', 'dark')
+    htmlRoot.classList.add(resolvedTheme)
+    htmlRoot.style.colorScheme = resolvedTheme
+  }
+
+  if (appRoot && appRoot !== htmlRoot) {
+    appRoot.classList.remove('light', 'dark')
+    appRoot.classList.add(resolvedTheme)
+    appRoot.dataset.colorScheme = resolvedTheme
+    appRoot.style.colorScheme = resolvedTheme
+  }
+}
+
 export function ThemeProvider ({
   children,
   defaultTheme = 'system',
   storageKey = 'ui-theme',
+  rootSelector,
+  applyToDocumentRoot = true,
   ...props
 }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>(() => {
+  const [theme, setThemeState] = useState<Theme>(() => {
     if (typeof window !== 'undefined') {
-      return (localStorage.getItem(storageKey) as Theme) || defaultTheme
+      try {
+        const storedTheme = localStorage.getItem(storageKey)
+        return isTheme(storedTheme) ? storedTheme : defaultTheme
+      } catch {
+        return defaultTheme
+      }
     }
     return defaultTheme
   })
 
-  const [actualTheme, setActualTheme] = useState<'light' | 'dark'>('light')
+  const [actualTheme, setActualTheme] = useState<'light' | 'dark'>(() => resolveTheme(theme))
 
-  useEffect(() => {
-    // Apply theme to both documentElement AND to the app root container
-    const htmlRoot = window.document.documentElement
-
-    // Find React app root container (common patterns)
-    const appRoot = document.getElementById('easycommerce-admin-root')
-                 || document.getElementById('easycommerce-store-root')
-                 || document.getElementById('root')
-                 || document.querySelector('[data-theme-root]')
-
-    let resolvedTheme: 'light' | 'dark' = 'light'
-
-    if (theme === 'system') {
-      resolvedTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-    } else {
-      resolvedTheme = theme
-    }
-
-    // Apply theme class to HTML root
-    htmlRoot.classList.remove('light', 'dark')
-    htmlRoot.classList.add(resolvedTheme)
-
-    // Apply theme class to app root container (for Joomla integration)
-    if (appRoot) {
-      appRoot.classList.remove('light', 'dark')
-      appRoot.classList.add(resolvedTheme)
-    }
-
+  useLayoutEffect(() => {
+    const resolvedTheme = resolveTheme(theme)
+    applyResolvedTheme(resolvedTheme, rootSelector, applyToDocumentRoot)
     setActualTheme(resolvedTheme)
-  }, [theme])
+  }, [applyToDocumentRoot, rootSelector, theme])
 
   useEffect(() => {
-    // Listen for system theme changes when theme is set to 'system'
-    if (theme === 'system') {
-      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+    if (theme !== 'system') return
 
-      const handleChange = (e: MediaQueryListEvent) => {
-        const resolvedTheme = e.matches ? 'dark' : 'light'
-        const root = window.document.documentElement
-
-        root.classList.remove('light', 'dark')
-        root.classList.add(resolvedTheme)
-        setActualTheme(resolvedTheme)
-      }
-
-      mediaQuery.addEventListener('change', handleChange)
-      return () => mediaQuery.removeEventListener('change', handleChange)
+    const syncSystemTheme = () => {
+      const resolvedTheme = resolveSystemTheme()
+      applyResolvedTheme(resolvedTheme, rootSelector, applyToDocumentRoot)
+      setActualTheme(resolvedTheme)
     }
-  }, [theme])
+
+    const mediaQuery = window.matchMedia?.('(prefers-color-scheme: dark)')
+    mediaQuery?.addEventListener?.('change', syncSystemTheme)
+
+    const observer = typeof MutationObserver !== 'undefined'
+      ? new MutationObserver(syncSystemTheme)
+      : null
+
+    observer?.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-color-scheme', 'data-bs-theme'],
+    })
+
+    return () => {
+      mediaQuery?.removeEventListener?.('change', syncSystemTheme)
+      observer?.disconnect()
+    }
+  }, [applyToDocumentRoot, rootSelector, theme])
 
   const value = {
     theme,
     setTheme: (theme: Theme) => {
-      localStorage.setItem(storageKey, theme)
-      setTheme(theme)
+      try {
+        localStorage.setItem(storageKey, theme)
+      } catch {
+        // Storage can be unavailable in privacy-restricted browser contexts.
+      }
+      setThemeState(theme)
     },
     actualTheme,
   }
