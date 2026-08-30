@@ -113,7 +113,8 @@ export type {
 
 // Utilities
 export { cn, generateAvatarUrl } from './lib/utils'
-export { humanReadableDate } from './utils/date-utils'
+export { humanReadableDate, formatAbsoluteDate, configureRelativeTime } from './utils/date-utils'
+export type { RelativeTimeOptions } from './utils/date-utils'
 export { formatShortNumber, formatNumber } from './utils/number-utils'
 export { stripHtml, getTextExcerpt, sanitizeHtmlContent } from './utils/text-utils'
 export { extractTextIntro, extractFormattedIntro } from './utils/html-utils'

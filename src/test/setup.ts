@@ -69,7 +69,9 @@ global.window = global.window || {}
     return key ? options[key as keyof typeof options] : options
   }),
   Text: {
-    _: vi.fn((key: string) => key),
+    // Mirrors the real Joomla.Text._: an unregistered key falls back to the
+    // supplied default rather than leaking the raw key into the UI.
+    _: vi.fn((key: string, defaultValue?: string) => defaultValue ?? key),
   },
 }
 
