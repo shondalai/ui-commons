@@ -3,7 +3,9 @@
   "version": "1.0.4",
   "description": "Reusable UI components and utilities for Joomla 5 components",
   "type": "module",
-  "sideEffects": ["**/*.css"],
+  "sideEffects": [
+    "**/*.css"
+  ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -130,6 +132,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
+    "eventsource-parser": "^4.1.0",
     "lucide-react": "^0.555.0",
     "tailwind-merge": "^3.3.1"
   },
