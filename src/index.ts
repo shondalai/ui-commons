@@ -4,6 +4,8 @@ import './index.css'
 // UI Components
 export { Avatar, AvatarImage, AvatarFallback } from './components/ui/avatar'
 export { Badge, badgeVariants } from './components/ui/badge'
+export { AiCreditsBadge } from './components/ui/ai-credits-badge'
+export type { AiCreditsBadgeProps } from './components/ui/ai-credits-badge'
 export { Button } from './components/ui/button'
 export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from './components/ui/card'
 export { Checkbox } from './components/ui/checkbox'
