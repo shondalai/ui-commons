@@ -1,5 +1,6 @@
 import React from 'react'
 import { TabbedContainer } from '../ui/tabbed-container'
+import type { TabbedContainerProps } from '../ui/tabbed-container'
 import { renderBlock } from './block-registry'
 import {
   Activity,
@@ -52,12 +53,13 @@ interface TabbedContainerBlockProps {
     }>
     container_mode?: 'tabs' | 'accordion'
     container_variant?: 'default' | 'minimal' | 'pills'
-    container_orientation?: 'horizontal' | 'vertical'
+    container_orientation?: TabbedContainerProps['orientation']
     default_tab?: string
     url_param?: string
   }
   contextData?: Record<string, any>
   className?: string
+  verticalNavigationAttributes?: TabbedContainerProps['verticalNavigationAttributes']
 }
 
 const getIconComponent = (iconName: string) => {
@@ -101,6 +103,7 @@ export const TabbedContainerBlock: React.FC<TabbedContainerBlockProps> = ({
   config = {},
   contextData = {},
   className = '',
+  verticalNavigationAttributes,
   ...otherProps
 }) => {
   const mergedContextData: Record<string, any> = {
@@ -174,6 +177,7 @@ export const TabbedContainerBlock: React.FC<TabbedContainerBlockProps> = ({
       orientation={container_orientation}
       variant={container_variant}
       className={className}
+      verticalNavigationAttributes={verticalNavigationAttributes}
     />
   )
 }

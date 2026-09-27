@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { TabbedContainer, TabConfig } from '../../../components/ui/tabbed-container'
+import { TabbedContainerBlock } from '../../../components/layout/tabbed-container-block'
 
 const TestComponent1 = () => <div>Content 1</div>
 const TestComponent2 = () => <div>Content 2</div>
@@ -61,6 +62,58 @@ describe('TabbedContainer', () => {
     )
     // Vertical orientation becomes a horizontal nav/content layout at lg.
     expect(container.firstChild).toHaveClass('lg:flex-row')
+  })
+
+  it.each(['vertical', 'vertical-left', 'vertical-right'] as const)(
+    'should apply optional navigation attributes only to the inner %s tablist',
+    (orientation) => {
+      const attributes = {
+        'data-sidebar-sticky': 'true',
+        'aria-label': 'Account navigation',
+        role: 'region',
+      }
+      const {container} = render(
+        <TabbedContainer tabs={mockTabs} orientation={orientation} verticalNavigationAttributes={attributes}/>,
+      )
+      const navigation = screen.getByRole('tablist', {name: 'Account navigation'})
+
+      expect(navigation).toHaveAttribute('data-sidebar-sticky', 'true')
+      expect(navigation).not.toHaveAttribute('tabindex')
+      expect(navigation.parentElement).not.toHaveAttribute('data-sidebar-sticky')
+      expect(container.querySelectorAll('[data-sidebar-sticky]')).toHaveLength(1)
+    },
+  )
+
+  it('should leave vertical navigation unchanged when no attributes are supplied', () => {
+    render(<TabbedContainer tabs={mockTabs} orientation="vertical-left"/>)
+    expect(screen.getByRole('tablist')).not.toHaveAttribute('data-sidebar-sticky')
+  })
+
+  it.each(['tabs', 'accordion'] as const)('should not mark non-sidebar navigation in %s mode', (mode) => {
+    const attributes = {'data-sidebar-sticky': 'true', 'aria-label': 'Account navigation'}
+    const {container} = render(
+      <TabbedContainer
+        tabs={mockTabs}
+        mode={mode}
+        orientation={mode === 'accordion' ? 'vertical-left' : 'horizontal'}
+        verticalNavigationAttributes={attributes}
+      />,
+    )
+    expect(container.querySelector('[data-sidebar-sticky]')).toBeNull()
+  })
+
+  it('should forward optional vertical navigation attributes through a layout block', () => {
+    const attributes = {'data-sidebar-sticky': 'true', 'aria-label': 'Account navigation'}
+    render(
+      <TabbedContainerBlock
+        config={{
+          container_orientation: 'vertical-left',
+          tab_areas: [{id: 'profile', label: 'Profile', icon: 'User', enabled: true, blocks: []}],
+        }}
+        verticalNavigationAttributes={attributes}
+      />,
+    )
+    expect(screen.getByRole('tablist', {name: 'Account navigation'})).toHaveAttribute('data-sidebar-sticky', 'true')
   })
 
   it('should apply custom className', () => {

@@ -13,6 +13,7 @@ interface DynamicLayoutManagerProps {
   loadingComponent?: React.ComponentType
   className?: string
   fullWidth?: boolean // Whether to use full width (no max-width constraint)
+  areaAttributes?: Record<string, React.HTMLAttributes<HTMLDivElement>>
 }
 
 // Static grid classes mapping for Tailwind CSS
@@ -48,6 +49,7 @@ const DynamicLayoutManager: React.FC<DynamicLayoutManagerProps> = ({
   loadingComponent: LoadingComponent,
   className,
   fullWidth = false,
+  areaAttributes,
 }) => {
   if (isLoading && LoadingComponent) {
     return <LoadingComponent/>
@@ -134,6 +136,7 @@ const DynamicLayoutManager: React.FC<DynamicLayoutManagerProps> = ({
                     contextData={contextData}
                     components={components}
                     componentProps={componentProps}
+                    attributes={areaAttributes?.[area.area_name]}
                   />
                 ))}
               </div>
@@ -147,6 +150,7 @@ const DynamicLayoutManager: React.FC<DynamicLayoutManagerProps> = ({
 
 interface AreaRendererProps {
   area: LayoutArea
+  attributes?: React.HTMLAttributes<HTMLDivElement>
   contextData: Record<string, any>
   components?: Record<string, React.ComponentType<any>>
   componentProps?: Record<string, any>
@@ -154,6 +158,7 @@ interface AreaRendererProps {
 
 const AreaRenderer: React.FC<AreaRendererProps> = React.memo(({
   area,
+  attributes,
   contextData,
   components,
   componentProps,
@@ -192,7 +197,7 @@ const AreaRenderer: React.FC<AreaRendererProps> = React.memo(({
 
   if (!area.blocks || area.blocks.length === 0) {
     return (
-      <div className={cn('space-y-4', getResponsiveClasses())}>
+      <div {...attributes} data-layout-area={area.area_name} className={cn('space-y-4', getResponsiveClasses(), attributes?.className)}>
         <div className="text-center text-muted-foreground text-sm py-8">
           <p>No blocks configured for {area.area_name}</p>
         </div>
@@ -212,7 +217,7 @@ const AreaRenderer: React.FC<AreaRendererProps> = React.memo(({
   // The area respects its own grid_columns while containing an internal grid for the blocks
   if (hasVariableGridSpans || hasNonFullWidthBlocks) {
     return (
-      <div className={cn(getResponsiveClasses())}>
+      <div {...attributes} data-layout-area={area.area_name} className={cn(getResponsiveClasses(), attributes?.className)}>
         <div className="grid grid-cols-12 gap-4">
           {area.blocks.sort((a, b) => a.ordering - b.ordering).map(block => (
             <BlockRenderer
@@ -231,7 +236,7 @@ const AreaRenderer: React.FC<AreaRendererProps> = React.memo(({
 
   // Otherwise, stack blocks vertically (legacy behavior) - no nested grid needed
   return (
-    <div className={cn('space-y-4', getResponsiveClasses())}>
+    <div {...attributes} data-layout-area={area.area_name} className={cn('space-y-4', getResponsiveClasses(), attributes?.className)}>
       {area.blocks.sort((a, b) => a.ordering - b.ordering).map(block => (
         <BlockRenderer
           key={block.id}

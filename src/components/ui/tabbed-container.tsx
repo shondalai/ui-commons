@@ -22,6 +22,7 @@ export interface TabbedContainerProps {
   variant?: 'default' | 'minimal' | 'pills'
   className?: string
   tabsClassName?: string
+  verticalNavigationAttributes?: React.HTMLAttributes<HTMLElement>
   contentClassName?: string
   onTabChange?: (tabId: string) => void
   loading?: boolean
@@ -37,6 +38,7 @@ export const TabbedContainer: React.FC<TabbedContainerProps> = ({
   orientation = 'horizontal',
   className = '',
   tabsClassName = '',
+  verticalNavigationAttributes,
   contentClassName = '',
   onTabChange,
   loading = false,
@@ -114,7 +116,7 @@ export const TabbedContainer: React.FC<TabbedContainerProps> = ({
           'bg-card text-card-foreground rounded-lg border border-border',
           className,
         )}>
-          {/* Tab Navigation - horizontal scroll on mobile, vertical sidebar on md+ */}
+          {/* Tab Navigation - horizontal scroll on mobile, vertical sidebar on lg+ */}
           <div className={cn(
             'flex-shrink-0',
             'lg:w-48 xl:w-56',
@@ -124,7 +126,11 @@ export const TabbedContainer: React.FC<TabbedContainerProps> = ({
             'bg-muted',
             tabsClassName,
           )}>
-            <nav className="flex lg:flex-col p-2 lg:space-y-1 gap-1 lg:gap-0 overflow-x-auto lg:overflow-x-visible" role="tablist">
+            <nav
+              {...verticalNavigationAttributes}
+              className={cn('flex lg:flex-col p-2 lg:space-y-1 gap-1 lg:gap-0 overflow-x-auto lg:overflow-x-visible', verticalNavigationAttributes?.className)}
+              role="tablist"
+            >
               {tabs.map((tab) => {
                 const isActive = activeTabs.has(tab.id)
                 const Icon = tab.icon
