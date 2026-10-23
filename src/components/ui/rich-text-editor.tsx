@@ -1616,7 +1616,6 @@ export const RichTextEditor = forwardRef<RichTextEditorRef, RichTextEditorProps>
   autoLoadEditContent = true,
   enabledButtons,
 }, ref) => {
-  const [_characterCount, setCharacterCount] = React.useState(0)
   const [isSourceView, setIsSourceView] = useState(false)
   const clearContentRef = useRef<(() => void) | null>(null)
   const loadContentRef = useRef<((html: string) => void) | null>(null)
@@ -1750,7 +1749,6 @@ export const RichTextEditor = forwardRef<RichTextEditorRef, RichTextEditorProps>
         {showCharacterCount && (
           <CharacterCountPlugin
             maxCharacters={maxCharacters}
-            onCountChange={setCharacterCount}
             labels={labels}
           />
         )}

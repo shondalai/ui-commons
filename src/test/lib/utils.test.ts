@@ -9,7 +9,7 @@ describe('utils', () => {
     })
 
     it('should handle conditional classes', () => {
-      const result = cn('base', false && 'conditional', 'always')
+      const result = cn('base', false, 'always')
       expect(result).toBe('base always')
     })
 
@@ -31,7 +31,7 @@ describe('utils', () => {
     })
 
     it('should handle arrays', () => {
-      const result = cn(['class1', 'class2', false && 'class3'])
+      const result = cn(['class1', 'class2', false])
       expect(result).toContain('class1')
       expect(result).toContain('class2')
       expect(result).not.toContain('class3')

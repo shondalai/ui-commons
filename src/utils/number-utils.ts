@@ -1,14 +1,13 @@
+import { getDocumentLocale } from './locale-utils'
+
 export const formatShortNumber = (num: number): string => {
-  if (num >= 1000000) {
-    return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M'
-  }
-  if (num >= 1000) {
-    return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K'
-  }
-  return num.toString()
+  return new Intl.NumberFormat(getDocumentLocale(), {
+    notation: 'compact',
+    maximumFractionDigits: 1,
+  }).format(num)
 }
 
 export const formatNumber = (num: number): string => {
-  return new Intl.NumberFormat().format(num)
+  return new Intl.NumberFormat(getDocumentLocale()).format(num)
 }
 

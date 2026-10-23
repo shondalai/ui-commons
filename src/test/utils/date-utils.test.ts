@@ -98,6 +98,20 @@ describe('date-utils', () => {
       expect(humanReadableDate('2025-10-06T12:00:00Z')).toBe('5 jours')
     })
 
+    it('uses a supplied locale plural category for relative timestamps', () => {
+      const originalLanguage = document.documentElement.lang
+      document.documentElement.lang = 'ru-RU'
+      registry._ = vi.fn((key: string) => (key === 'COM_CJFORUM_TIME_HOURS_AGO_FEW' ? '%s часа назад' : key))
+      configureRelativeTime({ keyPrefix: 'COM_CJFORUM_' })
+
+      try {
+        expect(humanReadableDate('2025-10-11T10:00:00Z')).toBe('2 часа назад')
+      }
+      finally {
+        document.documentElement.lang = originalLanguage
+      }
+    })
+
     it('should use the singular key without a placeholder', () => {
       registry._ = vi.fn((key: string) => (key === 'COM_CJFORUM_TIME_MINUTE_AGO' ? 'il y a 1 minute' : key))
       configureRelativeTime({ keyPrefix: 'COM_CJFORUM_' })

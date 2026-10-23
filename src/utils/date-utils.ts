@@ -1,3 +1,6 @@
+import { getDocumentLocale, getPluralTranslationKeys } from './locale-utils'
+import { formatNumber } from './number-utils'
+
 /**
  * Relative time formatting.
  *
@@ -72,13 +75,12 @@ const translate = (suffix: string, fallback: string, count?: number): string => 
 
     if (registry && typeof registry._ === 'function') {
       const key = configuredPrefix + suffix
-      const resolved = registry._(key, fallback)
-
-      // Joomla.Text._ hands back the key itself when the key was never registered
-      // with Text::script(). Treat that as "no translation" rather than printing
-      // COM_CJFORUM_TIME_HOURS_AGO at the user.
-      if (typeof resolved === 'string' && resolved !== '' && resolved !== key) {
-        text = resolved
+      for (const candidate of count === undefined ? [key] : getPluralTranslationKeys(key, count)) {
+        const resolved = registry._(candidate)
+        if (typeof resolved === 'string' && resolved !== '' && resolved !== candidate) {
+          text = resolved
+          break
+        }
       }
     }
   }
@@ -89,7 +91,7 @@ const translate = (suffix: string, fallback: string, count?: number): string => 
 
   if (count !== undefined) {
     // Support the positional and plain sprintf placeholders Joomla INI files use.
-    text = text.replace(/%1\$[sd]/g, String(count)).replace(/%[sd]/g, String(count))
+    text = text.replace(/%1\$[sd]/g, formatNumber(count)).replace(/%[sd]/g, formatNumber(count))
   }
 
   return text
@@ -161,20 +163,10 @@ export const formatAbsoluteDate = (
       return ''
     }
 
-    return date.toLocaleDateString(documentLocale(), options)
+    return date.toLocaleDateString(getDocumentLocale(), options)
   }
   catch {
     return ''
-  }
-}
-
-const documentLocale = (): string | undefined => {
-  try {
-    const lang = (globalThis as any)?.document?.documentElement?.lang
-    return typeof lang === 'string' && lang !== '' ? lang : undefined
-  }
-  catch {
-    return undefined
   }
 }
 

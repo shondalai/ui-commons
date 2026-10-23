@@ -1,5 +1,9 @@
-import { describe, it, expect } from 'vitest'
+import { afterEach, beforeEach, describe, it, expect } from 'vitest'
 import { formatShortNumber, formatNumber } from '../../utils/number-utils'
+
+const originalLanguage = document.documentElement.lang
+beforeEach(() => { document.documentElement.lang = 'en-US' })
+afterEach(() => { document.documentElement.lang = originalLanguage })
 
 describe('number-utils', () => {
   describe('formatShortNumber', () => {
@@ -13,7 +17,7 @@ describe('number-utils', () => {
       expect(formatShortNumber(1000)).toBe('1K')
       expect(formatShortNumber(1500)).toBe('1.5K')
       expect(formatShortNumber(10000)).toBe('10K')
-      expect(formatShortNumber(999999)).toBe('1000K')
+      expect(formatShortNumber(999999)).toBe('1M')
     })
 
     it('should format millions with M suffix', () => {

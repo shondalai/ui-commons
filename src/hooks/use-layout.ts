@@ -1,5 +1,5 @@
 // Generic Layout Hook - works with any Joomla component
-import { useEffect, useState, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useState, useRef } from 'react'
 import { useLayoutConfig } from '@/contexts/layout-context'
 import { createLayoutService, LayoutResponse } from '@/services/layout-service'
 import { LayoutArea } from '@/types/layout.types'
@@ -10,6 +10,15 @@ export interface UseLayoutResult {
   isLoading: boolean
   error: string | null
   refetch: () => Promise<void>
+}
+
+// Context values may be recreated by the host app. Rebuild the service only
+// when configuration values change, not on every parent render.
+const useLayoutService = () => {
+  const { apiBaseUrl, csrfToken, componentName, apiClient, debug, taskParamName, actionParamName } = useLayoutConfig()
+  return useMemo(() => createLayoutService({
+    apiBaseUrl, csrfToken, componentName, apiClient, debug, taskParamName, actionParamName,
+  }), [apiBaseUrl, csrfToken, componentName, apiClient, debug, taskParamName, actionParamName])
 }
 
 /**
@@ -37,29 +46,23 @@ export const useLayout = (
   layoutType: string,
   params: Record<string, any> = {},
 ): UseLayoutResult => {
-  const config = useLayoutConfig()
+  const layoutService = useLayoutService()
   const [areas, setAreas] = useState<LayoutArea[]>([])
   const [layout, setLayout] = useState<any>(null)
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
 
-  // Add ref to prevent duplicate calls during React.StrictMode
-  const isLoadingRef = useRef(false)
-  const paramsStringRef = useRef('')
+  const requestId = useRef(0)
+  const paramsKey = JSON.stringify(params)
 
-  const fetchLayout = async () => {
-    // Prevent duplicate calls
-    if (isLoadingRef.current) {
-      return
-    }
-
-    isLoadingRef.current = true
+  const fetchLayout = useCallback(async () => {
+    const currentRequest = ++requestId.current
     setIsLoading(true)
     setError(null)
 
     try {
-      const layoutService = createLayoutService(config)
-      const response: LayoutResponse = await layoutService.fetchLayout(layoutType, params)
+      const response: LayoutResponse = await layoutService.fetchLayout(layoutType, JSON.parse(paramsKey))
+      if (currentRequest !== requestId.current) return
 
       if (response.success && response.data && response.data.template) {
         setAreas(response.data.template.areas || [])
@@ -70,29 +73,20 @@ export const useLayout = (
       }
     }
     catch (err) {
+      if (currentRequest !== requestId.current) return
       const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred'
       setError(errorMessage)
       setAreas([])
     }
     finally {
-      setIsLoading(false)
-      isLoadingRef.current = false
+      if (currentRequest === requestId.current) setIsLoading(false)
     }
-  }
+  }, [layoutService, layoutType, paramsKey])
 
   useEffect(() => {
-    const paramsString = JSON.stringify(params)
-
-    // Only fetch if params actually changed
-    if (paramsString !== paramsStringRef.current) {
-      paramsStringRef.current = paramsString
-      fetchLayout()
-    } else if (paramsStringRef.current === '') {
-      // First mount
-      paramsStringRef.current = paramsString
-      fetchLayout()
-    }
-  }, [layoutType, JSON.stringify(params)])
+    void fetchLayout()
+    return () => { requestId.current += 1 }
+  }, [fetchLayout])
 
   return {
     areas,
@@ -112,14 +106,17 @@ export const useLayout = (
 export const useMultipleLayouts = (
   layoutTypes: string[],
 ): Record<string, UseLayoutResult> => {
-  const config = useLayoutConfig()
+  const layoutService = useLayoutService()
   const [results, setResults] = useState<Record<string, UseLayoutResult>>({})
   const [isInitialized, setIsInitialized] = useState(false)
+  const layoutTypesKey = JSON.stringify(layoutTypes)
 
   useEffect(() => {
+    let cancelled = false
+    setIsInitialized(false)
     const fetchLayouts = async () => {
-      const layoutService = createLayoutService(config)
-      const responses = await layoutService.fetchMultipleLayouts(layoutTypes)
+      const responses = await layoutService.fetchMultipleLayouts(JSON.parse(layoutTypesKey))
+      if (cancelled) return
 
       const newResults: Record<string, UseLayoutResult> = {}
 
@@ -132,7 +129,7 @@ export const useMultipleLayouts = (
           refetch: async () => {
             // Implement refetch for individual layout
             const newResponse = await layoutService.fetchLayout(layoutType)
-            if (newResponse.success && newResponse.data) {
+            if (!cancelled && newResponse.success && newResponse.data?.template) {
               setResults(prev => ({
                 ...prev,
                 [layoutType]: {
@@ -152,7 +149,8 @@ export const useMultipleLayouts = (
     }
 
     fetchLayouts()
-  }, [layoutTypes.join(',')])
+    return () => { cancelled = true }
+  }, [layoutService, layoutTypesKey])
 
   // Return loading state for all layouts before initialized
   if (!isInitialized) {

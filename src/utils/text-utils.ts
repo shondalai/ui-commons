@@ -74,7 +74,7 @@ export const sanitizeHtmlContent = (html: string | undefined | null): string => 
   const nodesToRemove: Element[] = []
   let node: Element | null
 
-  while (node = walker.nextNode() as Element) {
+  while ((node = walker.nextNode() as Element)) {
     if (!allowedTags.includes(node.tagName.toLowerCase())) {
       nodesToRemove.push(node)
     }
