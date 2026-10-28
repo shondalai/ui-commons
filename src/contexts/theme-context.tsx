@@ -5,8 +5,12 @@ type Theme = 'light' | 'dark' | 'system'
 type ThemeProviderProps = {
   children: React.ReactNode
   defaultTheme?: Theme
+  /** Enforce a site policy instead of a visitor's saved preference. */
+  forcedTheme?: Theme
   storageKey?: string
   rootSelector?: string
+  /** Owned body-level hosts that must share the app's resolved theme. */
+  portalSelector?: string
   applyToDocumentRoot?: boolean
 }
 
@@ -59,10 +63,34 @@ function findAppRoot (rootSelector?: string): HTMLElement | null {
     }
   }
 
-  return document.getElementById('easycommerce-admin-root')
+  return document.getElementById('ec-admin-root')
+    || document.getElementById('ec-store-root')
+    || document.getElementById('easycommerce-admin-root')
     || document.getElementById('easycommerce-store-root')
     || document.getElementById('root')
     || document.querySelector<HTMLElement>('[data-theme-root]')
+}
+
+/** Set only the theme markers on an application-owned element. */
+function applyElementTheme (element: HTMLElement, resolvedTheme: 'light' | 'dark'): void {
+  element.classList.remove('light', 'dark')
+  element.classList.add(resolvedTheme)
+  element.dataset.colorScheme = resolvedTheme
+  element.style.colorScheme = resolvedTheme
+}
+
+/** Theme existing and newly inserted portal hosts without touching the document. */
+function applyPortalTheme (node: ParentNode, selector: string, resolvedTheme: 'light' | 'dark'): void {
+  try {
+    if (node instanceof HTMLElement && node !== document.documentElement && node.matches(selector)) {
+      applyElementTheme(node, resolvedTheme)
+    }
+    node.querySelectorAll<HTMLElement>(selector).forEach(element => {
+      if (element !== document.documentElement) applyElementTheme(element, resolvedTheme)
+    })
+  } catch {
+    // A malformed optional selector must not break rendering the application.
+  }
 }
 
 function applyResolvedTheme (
@@ -82,22 +110,21 @@ function applyResolvedTheme (
   }
 
   if (appRoot && appRoot !== htmlRoot) {
-    appRoot.classList.remove('light', 'dark')
-    appRoot.classList.add(resolvedTheme)
-    appRoot.dataset.colorScheme = resolvedTheme
-    appRoot.style.colorScheme = resolvedTheme
+    applyElementTheme(appRoot, resolvedTheme)
   }
 }
 
 export function ThemeProvider ({
   children,
   defaultTheme = 'system',
+  forcedTheme,
   storageKey = 'ui-theme',
   rootSelector,
+  portalSelector,
   applyToDocumentRoot = true,
   ...props
 }: ThemeProviderProps) {
-  const [theme, setThemeState] = useState<Theme>(() => {
+  const [preferredTheme, setThemeState] = useState<Theme>(() => {
     if (typeof window !== 'undefined') {
       try {
         const storedTheme = localStorage.getItem(storageKey)
@@ -109,6 +136,7 @@ export function ThemeProvider ({
     return defaultTheme
   })
 
+  const theme = forcedTheme ?? preferredTheme
   const [actualTheme, setActualTheme] = useState<'light' | 'dark'>(() => resolveTheme(theme))
 
   useLayoutEffect(() => {
@@ -116,6 +144,26 @@ export function ThemeProvider ({
     applyResolvedTheme(resolvedTheme, rootSelector, applyToDocumentRoot)
     setActualTheme(resolvedTheme)
   }, [applyToDocumentRoot, rootSelector, theme])
+
+  useLayoutEffect(() => {
+    if (!portalSelector || typeof document === 'undefined') return
+
+    applyPortalTheme(document, portalSelector, actualTheme)
+    const observer = typeof MutationObserver !== 'undefined'
+      ? new MutationObserver(records => {
+        records.forEach(record => {
+          record.addedNodes.forEach(node => {
+            if (node instanceof HTMLElement) applyPortalTheme(node, portalSelector, actualTheme)
+          })
+        })
+      })
+      : null
+
+    // Only insertions matter. Observing class/style mutations would observe our
+    // own theme writes and can create a self-triggering update loop.
+    if (document.body) observer?.observe(document.body, { childList: true, subtree: true })
+    return () => observer?.disconnect()
+  }, [actualTheme, portalSelector])
 
   useEffect(() => {
     if (theme !== 'system') return
@@ -126,7 +174,12 @@ export function ThemeProvider ({
       setActualTheme(resolvedTheme)
     }
 
-    const mediaQuery = window.matchMedia?.('(prefers-color-scheme: dark)')
+    let mediaQuery: MediaQueryList | undefined
+    try {
+      mediaQuery = window.matchMedia?.('(prefers-color-scheme: dark)')
+    } catch {
+      // Some embedded/private contexts deny access to browser preferences.
+    }
     mediaQuery?.addEventListener?.('change', syncSystemTheme)
 
     const observer = typeof MutationObserver !== 'undefined'
@@ -147,6 +200,7 @@ export function ThemeProvider ({
   const value = {
     theme,
     setTheme: (theme: Theme) => {
+      if (forcedTheme !== undefined) return
       try {
         localStorage.setItem(storageKey, theme)
       } catch {
